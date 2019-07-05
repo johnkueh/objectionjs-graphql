@@ -7,17 +7,16 @@ import handler, { path } from '../../src/index';
 
 describe('Fetching user profile', () => {
   let user;
-  let query;
-  beforeEach(async () => {
-    query = `
-      query {
-        me {
-          id
-          name
-          email
-        }
+  const query = `
+    query {
+      me {
+        id
+        name
+        email
       }
-    `;
+    }
+  `;
+  beforeEach(async () => {
     user = await factory.create('user', {
       email: 'john@doe.com',
       password: 'password'

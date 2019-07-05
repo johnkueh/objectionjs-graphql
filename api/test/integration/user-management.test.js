@@ -17,6 +17,7 @@ describe('Fetching user profile', () => {
       }
     }
   `;
+
   beforeEach(async () => {
     user = await factory.create('user', {
       email: 'john@doe.com',
@@ -65,7 +66,7 @@ describe('Fetching user profile', () => {
   });
 });
 
-describe('Updating user profile successfully', () => {
+describe('Updating user profile', () => {
   let user;
   const query = `
     mutation($input: UpdateUserInput!) {
@@ -76,12 +77,14 @@ describe('Updating user profile successfully', () => {
       }
     }
   `;
+
   beforeEach(async () => {
     user = await factory.create('user', {
       email: 'john@doe.com',
       password: 'password'
     });
   });
+
   it('can update user profile with valid fields', async () => {
     const res = await request({
       handler,
@@ -119,6 +122,26 @@ describe('Updating user profile successfully', () => {
     const updatedUser = await User.query().findById(user.id);
     expect(updatedUser.validPassword('newpassword')).toBe(true);
   });
-});
 
-describe('Failed to update user profile', () => {});
+  it('fails to update with invalid fields', async () => {
+    const res = await request({
+      handler,
+      apiPath: path,
+      cookies: [`jwt=${user.jwt}`],
+      query,
+      variables: {
+        input: {
+          name: '',
+          email: 'hel@per',
+          password: 'abc'
+        }
+      }
+    });
+
+    expect(res.errors[0].extensions.exception.errors).toEqual({
+      name: 'Name must be at least 1 characters',
+      email: 'Email must be a valid email',
+      password: 'Password must be at least 6 characters'
+    });
+  });
+});

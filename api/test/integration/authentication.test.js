@@ -5,28 +5,6 @@ import factory from 'factory-girl';
 import request from '../support/request';
 import handler, { path } from '../../src/index';
 
-describe('Fetching user profile', () => {
-  it('is not able to fetch user profile without credentials', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      query: `
-        query {
-          me {
-            id
-            name
-            email
-          }
-        }
-      `
-    });
-
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
-  });
-});
-
 describe('Logging in', () => {
   beforeEach(async () => {
     await factory.create('user', {

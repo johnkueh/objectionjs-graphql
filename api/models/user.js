@@ -42,19 +42,23 @@ class User extends Model {
 
   async $beforeInsert(context) {
     await super.$beforeInsert(context);
-    this.password = bcrypt.hashSync(this.password, 10);
+    this.hashPassword();
   }
 
-  // async $beforeUpdate(options, context) {
-  //   await super.$beforeUpdate(options, context);
+  async $beforeUpdate(options, context) {
+    await super.$beforeUpdate(options, context);
+    this.hashPassword();
+  }
 
-  //   if (options.patch) {
-  //     return false;
-  //   }
+  hashPassword() {
+    if (this.password) {
+      this.password = bcrypt.hashSync(this.password, 10);
+    }
+  }
 
-  //   console.log('update - hash password here', this.password);
-  //   return;
-  // }
+  validPassword(password) {
+    return bcrypt.compareSync(password, this.password);
+  }
 
   get jwt() {
     const { id, email } = this;

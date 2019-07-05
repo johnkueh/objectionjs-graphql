@@ -15,6 +15,7 @@ input LoginInput {
 type Mutation {
   login(input: LoginInput!): AuthPayload!
   signup(input: SignupInput!): AuthPayload!
+  updateUser(input: UpdateUserInput!): User!
 }
 
 type Query {
@@ -25,6 +26,12 @@ input SignupInput {
   email: String!
   name: String!
   password: String!
+}
+
+input UpdateUserInput {
+  email: String
+  name: String
+  password: String
 }
 
 type User {

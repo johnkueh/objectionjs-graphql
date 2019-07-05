@@ -1,7 +1,14 @@
 import { objectType, inputObjectType, queryField, mutationField, arg } from 'nexus';
-import bcrypt from 'bcryptjs';
 import ValidationErrors from '../lib/validation-errors';
 import User from '../models/user';
+
+export const AuthPayloadType = objectType({
+  name: 'AuthPayload',
+  definition(t) {
+    t.string('jwt');
+    t.field('user', { type: UserType });
+  }
+});
 
 export const UserType = objectType({
   name: 'User',
@@ -12,32 +19,7 @@ export const UserType = objectType({
   }
 });
 
-export const LoginInputType = inputObjectType({
-  name: 'LoginInput',
-  definition(t) {
-    t.string('email', { required: true });
-    t.string('password', { required: true });
-  }
-});
-
-export const SignupInputType = inputObjectType({
-  name: 'SignupInput',
-  definition(t) {
-    t.string('email', { required: true });
-    t.string('password', { required: true });
-    t.string('name', { required: true });
-  }
-});
-
-export const AuthPayloadType = objectType({
-  name: 'AuthPayload',
-  definition(t) {
-    t.string('jwt');
-    t.field('user', { type: UserType });
-  }
-});
-
-export const meQuery = queryField('me', {
+export const MeQuery = queryField('me', {
   type: UserType,
   resolve: async (parent, args, ctx) => {
     if (ctx.user) {
@@ -51,7 +33,16 @@ export const meQuery = queryField('me', {
   }
 });
 
-export const signupMutation = mutationField('signup', {
+export const SignupInputType = inputObjectType({
+  name: 'SignupInput',
+  definition(t) {
+    t.string('email', { required: true });
+    t.string('password', { required: true });
+    t.string('name', { required: true });
+  }
+});
+
+export const SignupMutation = mutationField('signup', {
   type: AuthPayloadType,
   args: {
     input: arg({
@@ -73,7 +64,15 @@ export const signupMutation = mutationField('signup', {
   }
 });
 
-export const loginMutation = mutationField('login', {
+export const LoginInputType = inputObjectType({
+  name: 'LoginInput',
+  definition(t) {
+    t.string('email', { required: true });
+    t.string('password', { required: true });
+  }
+});
+
+export const LoginMutation = mutationField('login', {
   type: AuthPayloadType,
   args: {
     input: arg({
@@ -88,7 +87,7 @@ export const loginMutation = mutationField('login', {
       .limit(1)
       .first();
 
-    if (user && bcrypt.compareSync(password, user.password)) {
+    if (user && user.validPassword(password)) {
       return {
         jwt: user.jwt,
         user
@@ -98,5 +97,28 @@ export const loginMutation = mutationField('login', {
     throw ValidationErrors({
       auth: 'Please check your credentials and try again.'
     });
+  }
+});
+
+export const UpdateUserType = inputObjectType({
+  name: 'UpdateUserInput',
+  definition(t) {
+    t.string('name', { required: false });
+    t.string('email', { required: false });
+    t.string('password', { required: false });
+  }
+});
+
+export const UpdateUserMutation = mutationField('updateUser', {
+  type: UserType,
+  args: {
+    input: arg({
+      type: UpdateUserType,
+      required: true
+    })
+  },
+  resolve: async (parent, { input }, ctx) => {
+    const user = await User.query().patchAndFetchById(ctx.user.id, input);
+    return user;
   }
 });

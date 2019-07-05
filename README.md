@@ -7,4 +7,4 @@
 - bcrypt, jwt for authentication
 - FactoryGirl for test fixtures replacement, paired with `factory-girl-objection-adapter`
   for easy creation of test cases
-- Example integration tests of graphql endpoints with a real db
+- Example [integration tests](https://github.com/yoongfook/objection-js-graphql-starter/tree/master/api/test/integration) of graphql endpoints with a real db

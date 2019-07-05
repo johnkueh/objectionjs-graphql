@@ -83,8 +83,10 @@ export const loginMutation = mutationField('login', {
   },
   resolve: async (parent, { input }) => {
     const { email, password } = input;
-    const users = await User.query().where('email', email);
-    const user = users[0];
+    const user = await User.query()
+      .where('email', email)
+      .limit(1)
+      .first();
 
     if (user && bcrypt.compareSync(password, user.password)) {
       return {

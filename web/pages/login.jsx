@@ -1,11 +1,10 @@
 import React from 'react';
 import Router from 'next/router';
-import { Formik, Form, Field } from 'formik';
 import Link from 'next/link';
 import gql from 'graphql-tag';
 import Cookies from 'js-cookie';
 import { useMutation } from 'react-apollo-hooks';
-import { useError } from '../lib/use-error';
+import { useFormik } from '../lib/use-formik';
 import Button from '../components/button';
 import AlertMessages from '../components/alert-messages';
 
@@ -23,69 +22,36 @@ const LOGIN = gql`
 
 const Login = () => {
   const login = useMutation(LOGIN);
-  const [messages, setError] = useError();
+  const Formik = useFormik({
+    initialValues: { email: '', password: '' },
+    onSubmit: async input => {
+      const {
+        data: {
+          login: { jwt }
+        }
+      } = await login({
+        variables: { input }
+      });
+      Cookies.set('jwt', jwt);
+      Router.push('/start');
+    }
+  });
 
   return (
     <>
       <h2>Login</h2>
-      <Formik
-        initialValues={{ email: '', password: '' }}
-        onSubmit={async ({ email, password }, { setSubmitting }) => {
-          try {
-            const {
-              data: {
-                login: { user, jwt }
-              }
-            } = await login({
-              variables: {
-                input: { email, password }
-              }
-            });
-
-            Cookies.set('jwt', jwt);
-            Router.push('/start');
-          } catch (error) {
-            setError(error);
-            setSubmitting(false);
-          }
-        }}
-      >
-        {({ isSubmitting }) => (
-          <Form className="mt-3">
-            <AlertMessages messages={{ warning: messages }} />
-            <Field
-              name="email"
-              className="form-control mb-3"
-              type="email"
-              placeholder="Email address"
-            />
-            <Field
-              name="password"
-              className="form-control mb-3"
-              type="password"
-              placeholder="Password"
-            />
-            <div className="mt-4">
-              <Button
-                loading={isSubmitting}
-                loadingText="Logging in..."
-                className="btn btn-block btn-primary"
-                type="submit"
-              >
-                Log in
-              </Button>
-            </div>
-            <div className="mt-3">
-              <div>
-                Dont have an account?&nbsp;
-                <Link>
-                  <a href="/signup">Sign up</a>
-                </Link>
-              </div>
-            </div>
-          </Form>
-        )}
-      </Formik>
+      <Formik.Form>
+        <AlertMessages messages={{ warning: Formik.errors }} />
+        <Formik.Field name="email" type="email" placeholder="Email address" />
+        <Formik.Field name="password" type="password" placeholder="Password" />
+        <Button loading={Formik.isSubmitting} loadingText="Logging in..." type="submit">
+          Log in
+        </Button>
+        <p>Dont have an account?&nbsp;</p>
+        <Link href="/signup">
+          <a href="/signup">Sign up</a>
+        </Link>
+      </Formik.Form>
     </>
   );
 };

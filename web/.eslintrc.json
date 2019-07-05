@@ -1,0 +1,21 @@
+{
+  "extends": ["airbnb", "prettier", "react-app", "plugin:prettier/recommended"],
+  "plugins": ["prettier", "react-hooks", "cypress"],
+  "rules": {
+    "prettier/prettier": ["error"],
+    "jsx-a11y/href-no-hash": [0],
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "no-param-reassign": 0,
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/label-has-for": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": true, "peerDependencies": true }
+    ]
+  },
+  "env": {
+    "cypress/globals": true
+  }
+}

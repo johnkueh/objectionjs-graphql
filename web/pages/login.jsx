@@ -78,7 +78,7 @@ const Login = () => {
             <div className="mt-3">
               <div>
                 Dont have an account?&nbsp;
-                <Link href="/signup">
+                <Link>
                   <a href="/signup">Sign up</a>
                 </Link>
               </div>

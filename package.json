@@ -10,6 +10,7 @@
     "dev": "npm-run-all --parallel nexus now:dev"
   },
   "devDependencies": {
+    "react": "^16.7.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.6.0",
     "eslint-config-airbnb": "^17.1.0",

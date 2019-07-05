@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import jsonwebtoken from 'jsonwebtoken';
 import { Model } from './base';
 
 class User extends Model {
@@ -54,6 +55,14 @@ class User extends Model {
   //   console.log('update - hash password here', this.password);
   //   return;
   // }
+
+  get jwt() {
+    const { id, email } = this;
+    return jwtSign({ id, email });
+  }
 }
 
 export default User;
+
+const JWTSECRET = 'JWTSECRET';
+const jwtSign = ({ id, email }) => jsonwebtoken.sign({ id, email }, JWTSECRET);

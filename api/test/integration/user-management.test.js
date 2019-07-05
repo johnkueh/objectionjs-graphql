@@ -3,7 +3,6 @@ import '../factories';
 
 import factory from 'factory-girl';
 import request from '../support/request';
-import { jwtSign } from '../../schema/user';
 import handler, { path } from '../../src/index';
 
 describe('Fetching user profile', () => {
@@ -39,7 +38,7 @@ describe('Fetching user profile', () => {
     const res = await request({
       handler,
       apiPath: path,
-      cookies: [`jwt=${jwtSign({ id: user.id, email: user.email })}`],
+      cookies: [`jwt=${user.jwt}`],
       query: `
         query {
           me {

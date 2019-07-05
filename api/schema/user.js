@@ -1,6 +1,5 @@
 import { objectType, inputObjectType, queryField, mutationField, arg } from 'nexus';
 import bcrypt from 'bcryptjs';
-import jsonwebtoken from 'jsonwebtoken';
 import ValidationErrors from '../lib/validation-errors';
 import User from '../models/user';
 
@@ -68,7 +67,7 @@ export const signupMutation = mutationField('signup', {
       password
     });
     return {
-      jwt: jwtSign({ id: user.id, email }),
+      jwt: user.jwt,
       user
     };
   }
@@ -89,7 +88,7 @@ export const loginMutation = mutationField('login', {
 
     if (user && bcrypt.compareSync(password, user.password)) {
       return {
-        jwt: jwtSign({ id: user.id, email }),
+        jwt: user.jwt,
         user
       };
     }
@@ -99,6 +98,3 @@ export const loginMutation = mutationField('login', {
     });
   }
 });
-
-export const JWTSECRET = 'JWTSECRET';
-export const jwtSign = ({ id, email }) => jsonwebtoken.sign({ id, email }, JWTSECRET);

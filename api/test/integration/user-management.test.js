@@ -7,7 +7,17 @@ import handler, { path } from '../../src/index';
 
 describe('Fetching user profile', () => {
   let user;
+  let query;
   beforeEach(async () => {
+    query = `
+      query {
+        me {
+          id
+          name
+          email
+        }
+      }
+    `;
     user = await factory.create('user', {
       email: 'john@doe.com',
       password: 'password'
@@ -18,15 +28,20 @@ describe('Fetching user profile', () => {
     const res = await request({
       handler,
       apiPath: path,
-      query: `
-        query {
-          me {
-            id
-            name
-            email
-          }
-        }
-      `
+      query
+    });
+
+    expect(res.errors[0].extensions.exception.errors).toEqual({
+      auth: 'You are not authorized to perform this action'
+    });
+  });
+
+  it('is not able to fetch user profile with wrong credentials', async () => {
+    const res = await request({
+      handler,
+      apiPath: path,
+      cookies: [`jwt=wrongjwt`],
+      query
     });
 
     expect(res.errors[0].extensions.exception.errors).toEqual({
@@ -39,15 +54,7 @@ describe('Fetching user profile', () => {
       handler,
       apiPath: path,
       cookies: [`jwt=${user.jwt}`],
-      query: `
-        query {
-          me {
-            id
-            name
-            email
-          }
-        }
-      `
+      query
     });
 
     expect(res.data.me).toEqual({

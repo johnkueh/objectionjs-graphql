@@ -6,6 +6,18 @@ import request from '../support/request';
 import handler, { path } from '../../src/index';
 
 describe('Logging in', () => {
+  const query = `
+    mutation($input: LoginInput!) {
+      login(input: $input) {
+        jwt
+        user {
+          id
+          name
+          email
+        }
+      }
+    }
+  `;
   beforeEach(async () => {
     await factory.create('user', {
       email: 'john@doe.com',
@@ -17,18 +29,7 @@ describe('Logging in', () => {
     const res = await request({
       handler,
       apiPath: path,
-      query: `
-        mutation($input: LoginInput!) {
-          login(input: $input) {
-            jwt
-            user {
-              id
-              name
-              email
-            }
-          }
-        }
-      `,
+      query,
       variables: {
         input: {
           email: 'john@doe.com',
@@ -46,18 +47,7 @@ describe('Logging in', () => {
     const res = await request({
       handler,
       apiPath: path,
-      query: `
-        mutation($input: LoginInput!) {
-          login(input: $input) {
-            jwt
-            user {
-              id
-              name
-              email
-            }
-          }
-        }
-      `,
+      query,
       variables: {
         input: {
           email: 'john@doe.com',
@@ -78,22 +68,23 @@ describe('Logging in', () => {
 });
 
 describe('Signing up', () => {
+  const query = `
+    mutation($input: SignupInput!) {
+      signup(input: $input) {
+        jwt
+        user {
+          id
+          name
+          email
+        }
+      }
+    }
+  `;
   it('is able to signup successfully', async () => {
     const res = await request({
       handler,
       apiPath: path,
-      query: `
-        mutation($input: SignupInput!) {
-          signup(input: $input) {
-            jwt
-            user {
-              id
-              name
-              email
-            }
-          }
-        }
-      `,
+      query,
       variables: {
         input: {
           name: 'John Doe',
@@ -117,18 +108,7 @@ describe('Signing up', () => {
     const res = await request({
       handler,
       apiPath: path,
-      query: `
-        mutation($input: SignupInput!) {
-          signup(input: $input) {
-            jwt
-            user {
-              id
-              name
-              email
-            }
-          }
-        }
-      `,
+      query,
       variables: {
         input: {
           name: '',
@@ -154,18 +134,7 @@ describe('Signing up', () => {
     const res = await request({
       handler,
       apiPath: path,
-      query: `
-        mutation($input: SignupInput!) {
-          signup(input: $input) {
-            jwt
-            user {
-              id
-              name
-              email
-            }
-          }
-        }
-      `,
+      query,
       variables: {
         input: {
           name: 'John Doe',

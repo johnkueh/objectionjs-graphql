@@ -1,0 +1,28 @@
+{
+  "name": "objectionjs-graphql-starter",
+  "version": "1.0.0",
+  "author": "John Kueh <yoongfook@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "nexus": "cd api && yarn nexus",
+    "now:dev": "now dev",
+    "dev": "npm-run-all --parallel nexus now:dev"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.6.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-config-react-app": "^3.0.7",
+    "eslint-plugin-cypress": "^2.2.1",
+    "eslint-plugin-flowtype": "^2.50.3",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-react-hooks": "^1.6.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.16.4"
+  }
+}

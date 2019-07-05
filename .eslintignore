@@ -1,0 +1,5 @@
+/api/knexfile.js
+/api/lib
+/api/migrations
+/api/models
+/api/seeds

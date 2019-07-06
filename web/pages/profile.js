@@ -3,9 +3,9 @@ import gql from 'graphql-tag';
 import { useMutation } from 'react-apollo-hooks';
 import Link from 'next/link';
 import { useFormik } from '../hooks/use-formik';
+import { withAuth } from '../lib/with-auth';
 import Button from '../components/button';
 import AlertMessages from '../components/alert-messages';
-import { withAuth } from '../lib/with-auth';
 
 const Profile = ({ user: { email, name } }) => {
   const [success, setSuccess] = useState(null);

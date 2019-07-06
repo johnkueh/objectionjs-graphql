@@ -3,3 +3,5 @@
 /api/migrations
 /api/models
 /api/seeds
+
+/web/lib

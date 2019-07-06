@@ -4,7 +4,7 @@ import Link from 'next/link';
 import gql from 'graphql-tag';
 import Cookies from 'js-cookie';
 import { useMutation } from 'react-apollo-hooks';
-import { useFormik } from '../lib/use-formik';
+import { useFormik } from '../hooks/use-formik';
 import Button from '../components/button';
 import AlertMessages from '../components/alert-messages';
 
@@ -13,6 +13,7 @@ const LOGIN = gql`
     login(input: $input) {
       jwt
       user {
+        id
         name
         email
       }
@@ -50,6 +51,9 @@ const Login = () => {
         <p>Dont have an account?&nbsp;</p>
         <Link href="/signup">
           <a href="/signup">Sign up</a>
+        </Link>
+        <Link href="/start">
+          <a href="/start">Start</a>
         </Link>
       </Formik.Form>
     </>

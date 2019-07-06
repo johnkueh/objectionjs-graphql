@@ -8,7 +8,7 @@ export const useError = () => {
   return [
     messages,
     error => {
-      if (error.graphQLErrors) {
+      if (error.graphQLErrors[0]) {
         setMessages(error.graphQLErrors[0].extensions.exception.errors);
       } else {
         setMessages(initialState);

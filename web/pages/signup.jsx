@@ -4,7 +4,7 @@ import Link from 'next/link';
 import gql from 'graphql-tag';
 import Cookies from 'js-cookie';
 import { useMutation } from 'react-apollo-hooks';
-import { useFormik } from '../lib/use-formik';
+import { useFormik } from '../hooks/use-formik';
 import Button from '../components/button';
 import AlertMessages from '../components/alert-messages';
 

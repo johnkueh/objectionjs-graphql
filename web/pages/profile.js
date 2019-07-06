@@ -17,7 +17,9 @@ const Profile = ({ user: { email, name } }) => {
       await updateUser({
         variables: { input }
       });
-      setSuccess(message);
+      setSuccess({
+        user: 'Successfully updated profile'
+      });
     }
   });
   return (
@@ -55,9 +57,5 @@ const UPDATE_USER = gql`
     }
   }
 `;
-
-const message = {
-  user: 'Successfully updated profile'
-};
 
 export default withAuth(Profile);

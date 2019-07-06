@@ -8,12 +8,13 @@ export const useError = () => {
   return [
     messages,
     error => {
-      if (error.graphQLErrors[0]) {
-        setMessages(error.graphQLErrors[0].extensions.exception.errors);
-      } else {
-        setMessages(initialState);
+      if (!error || !error.graphQLErrors) {
+        return setMessages(initialState);
       }
-    }
+
+      return setMessages(error.graphQLErrors[0].extensions.exception.errors);
+    },
+    initialState
   ];
 };
 

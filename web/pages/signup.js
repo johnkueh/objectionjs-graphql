@@ -8,18 +8,6 @@ import { useFormik } from '../hooks/use-formik';
 import Button from '../components/button';
 import AlertMessages from '../components/alert-messages';
 
-const SIGNUP = gql`
-  mutation($input: SignupInput!) {
-    signup(input: $input) {
-      jwt
-      user {
-        name
-        email
-      }
-    }
-  }
-`;
-
 const Signup = () => {
   const signup = useMutation(SIGNUP);
   const Formik = useFormik({
@@ -56,5 +44,17 @@ const Signup = () => {
     </>
   );
 };
+
+const SIGNUP = gql`
+  mutation($input: SignupInput!) {
+    signup(input: $input) {
+      jwt
+      user {
+        name
+        email
+      }
+    }
+  }
+`;
 
 export default Signup;

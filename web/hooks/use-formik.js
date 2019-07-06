@@ -5,13 +5,14 @@ import { useError } from './use-error';
 
 export const useFormik = ({ initialValues, onSubmit }) => {
   const [isSubmitting, setSubmitting] = useState(false);
-  const [errorMessages, setError] = useError();
+  const [errorMessages, setError, initialState] = useError();
 
   const FormikForm = useCallback(({ children }) => {
     return (
       <Formik
         initialValues={initialValues}
         onSubmit={async (values, options) => {
+          setError(initialState);
           setSubmitting(true);
           try {
             await onSubmit(values, options);

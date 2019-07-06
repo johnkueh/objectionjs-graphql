@@ -10,4 +10,4 @@ const schema = makeSchema({
   }
 });
 
-console.log('Generated Nexus Schema');
+console.log('\nGenerated Nexus Schema');

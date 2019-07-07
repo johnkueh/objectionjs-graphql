@@ -16,16 +16,9 @@ export const WorkspacesQuery = queryField('workspaces', {
   list: true,
   resolve: async (parent, args, ctx) => {
     const query = Workspace.query();
-
-    if (ctx.user) {
-      const owner = await User.query().findById(ctx.user.id);
-      const relatedIds = await owner.$relatedQuery('workspaces').map(({ id }) => id);
-      return query.where('id', 'IN', relatedIds);
-    }
-
-    throw ValidationErrors({
-      auth: 'You are not authorized to perform this action'
-    });
+    const owner = await User.query().findById(ctx.user.id);
+    const relatedIds = await owner.$relatedQuery('workspaces').map(({ id }) => id);
+    return query.where('id', 'IN', relatedIds);
   }
 });
 
@@ -46,15 +39,8 @@ export const CreateWorkspaceMutation = mutationField('createWorkspace', {
   },
   resolve: async (parent, { input }, ctx) => {
     const workspace = await Workspace.query().insert(input);
-
-    if (ctx.user) {
-      await workspace.$relatedQuery('users').relate(ctx.user.id);
-      return workspace;
-    }
-
-    throw ValidationErrors({
-      auth: 'You are not authorized to perform this action'
-    });
+    await workspace.$relatedQuery('users').relate(ctx.user.id);
+    return workspace;
   }
 });
 
@@ -77,12 +63,10 @@ export const UpdateWorkspaceMutation = mutationField('updateWorkspace', {
   resolve: async (parent, { input }, ctx) => {
     const { id } = input;
 
-    if (ctx.user) {
-      const owner = await User.query().findById(ctx.user.id);
-      const relatedIds = await owner.$relatedQuery('workspaces').map(({ id }) => id);
-      if (relatedIds.includes(id)) {
-        return Workspace.query().patchAndFetchById(id, input);
-      }
+    const owner = await User.query().findById(ctx.user.id);
+    const relatedIds = await owner.$relatedQuery('workspaces').map(({ id }) => id);
+    if (relatedIds.includes(id)) {
+      return Workspace.query().patchAndFetchById(id, input);
     }
 
     throw ValidationErrors({
@@ -109,12 +93,10 @@ export const DeleteWorkspaceMutation = mutationField('deleteWorkspace', {
   resolve: async (parent, { input }, ctx) => {
     const { id } = input;
 
-    if (ctx.user) {
-      const owner = await User.query().findById(ctx.user.id);
-      const relatedIds = await owner.$relatedQuery('workspaces').map(({ id }) => id);
-      if (relatedIds.includes(id)) {
-        return { count: await Workspace.query().deleteById(id) };
-      }
+    const owner = await User.query().findById(ctx.user.id);
+    const relatedIds = await owner.$relatedQuery('workspaces').map(({ id }) => id);
+    if (relatedIds.includes(id)) {
+      return { count: await Workspace.query().deleteById(id) };
     }
 
     throw ValidationErrors({

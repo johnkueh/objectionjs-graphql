@@ -4,17 +4,22 @@ import { Model } from 'objection';
 import jsonwebtoken from 'jsonwebtoken';
 import cookie from 'cookie';
 import { makeSchema } from 'nexus';
+import { applyMiddleware } from 'graphql-middleware';
 import * as types from '../schema';
+import { permissions } from '../permissions';
 import connection from '../knexfile';
 
 const knexConnection = Knex(connection[process.env.NODE_ENV]);
 Model.knex(knexConnection);
 
-const schema = makeSchema({
-  types,
-  outputs: false,
-  shouldGenerateArtifacts: false
-});
+const schema = applyMiddleware(
+  makeSchema({
+    types,
+    outputs: false,
+    shouldGenerateArtifacts: false
+  }),
+  permissions
+);
 
 const server = new ApolloServer({
   schema,

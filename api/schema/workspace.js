@@ -59,17 +59,9 @@ export const UpdateWorkspaceMutation = mutationField('updateWorkspace', {
       required: true
     })
   },
-  resolve: async (parent, { input }, ctx) => {
+  resolve: async (parent, { input }) => {
     const { id } = input;
-    const owner = ctx.user;
-    const relatedIds = await owner.$relatedQuery('workspaces').map(related => related.id);
-    if (relatedIds.includes(id)) {
-      return Workspace.query().patchAndFetchById(id, input);
-    }
-
-    throw ValidationErrors({
-      auth: 'You are not authorized to perform this action'
-    });
+    return Workspace.query().patchAndFetchById(id, input);
   }
 });
 
@@ -90,14 +82,6 @@ export const DeleteWorkspaceMutation = mutationField('deleteWorkspace', {
   },
   resolve: async (parent, { input }, ctx) => {
     const { id } = input;
-    const owner = ctx.user;
-    const relatedIds = await owner.$relatedQuery('workspaces').map(related => related.id);
-    if (relatedIds.includes(id)) {
-      return { count: await Workspace.query().deleteById(id) };
-    }
-
-    throw ValidationErrors({
-      auth: 'You are not authorized to perform this action'
-    });
+    return { count: await Workspace.query().deleteById(id) };
   }
 });

@@ -1,7 +1,6 @@
 import { objectType, inputObjectType, queryField, mutationField, arg } from 'nexus';
 import ValidationErrors from '../lib/validation-errors';
 import Workspace from '../models/workspace';
-import User from '../models/user';
 
 export const WorkspaceType = objectType({
   name: 'Workspace',
@@ -15,8 +14,8 @@ export const WorkspacesQuery = queryField('workspaces', {
   type: WorkspaceType,
   list: true,
   resolve: async (parent, args, ctx) => {
+    const owner = ctx.user;
     const query = Workspace.query();
-    const owner = await User.query().findById(ctx.user.id);
     const relatedIds = await owner.$relatedQuery('workspaces').map(({ id }) => id);
     return query.where('id', 'IN', relatedIds);
   }
@@ -62,9 +61,8 @@ export const UpdateWorkspaceMutation = mutationField('updateWorkspace', {
   },
   resolve: async (parent, { input }, ctx) => {
     const { id } = input;
-
-    const owner = await User.query().findById(ctx.user.id);
-    const relatedIds = await owner.$relatedQuery('workspaces').map(({ id }) => id);
+    const owner = ctx.user;
+    const relatedIds = await owner.$relatedQuery('workspaces').map(related => related.id);
     if (relatedIds.includes(id)) {
       return Workspace.query().patchAndFetchById(id, input);
     }
@@ -92,9 +90,8 @@ export const DeleteWorkspaceMutation = mutationField('deleteWorkspace', {
   },
   resolve: async (parent, { input }, ctx) => {
     const { id } = input;
-
-    const owner = await User.query().findById(ctx.user.id);
-    const relatedIds = await owner.$relatedQuery('workspaces').map(({ id }) => id);
+    const owner = ctx.user;
+    const relatedIds = await owner.$relatedQuery('workspaces').map(related => related.id);
     if (relatedIds.includes(id)) {
       return { count: await Workspace.query().deleteById(id) };
     }

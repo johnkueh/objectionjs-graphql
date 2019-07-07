@@ -8,6 +8,7 @@ import { applyMiddleware } from 'graphql-middleware';
 import * as types from '../schema';
 import { permissions } from '../permissions';
 import connection from '../knexfile';
+import User from '../models/user';
 
 const knexConnection = Knex(connection[process.env.NODE_ENV]);
 Model.knex(knexConnection);
@@ -21,27 +22,30 @@ const schema = applyMiddleware(
   permissions
 );
 
+const context = async ({ req }) => {
+  let user = null;
+
+  try {
+    const { jwt } = cookie.parse(req.headers.cookie);
+    if (jwt) {
+      const hash = jsonwebtoken.verify(jwt, JWTSECRET);
+      user = await User.query().findById(hash.id);
+    }
+  } catch (error) {
+    // console.log('jwt error', error);
+    // Token not valid
+  }
+
+  return {
+    user
+  };
+};
+
 const server = new ApolloServer({
-  schema,
   introspection: true,
   playground: true,
-  context: async ({ req }) => {
-    let user = null;
-
-    try {
-      const { jwt } = cookie.parse(req.headers.cookie);
-      if (jwt) {
-        user = jsonwebtoken.verify(jwt, JWTSECRET);
-      }
-    } catch (error) {
-      // console.log('jwt error', error);
-      // Token not valid
-    }
-
-    return {
-      user
-    };
-  }
+  schema,
+  context
 });
 
 export const JWTSECRET = 'JWTSECRET';

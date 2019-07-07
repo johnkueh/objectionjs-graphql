@@ -7,19 +7,40 @@ type AuthPayload {
   user: User!
 }
 
+input CreateWorkspaceInput {
+  name: String!
+}
+
+type DeletePayload {
+  count: Int!
+}
+
+input DeleteWorkspaceInput {
+  id: String!
+}
+
+type DeleteWorkspacePayload {
+  count: Int!
+}
+
 input LoginInput {
   email: String!
   password: String!
 }
 
 type Mutation {
+  createWorkspace(input: CreateWorkspaceInput!): Workspace!
+  deleteWorkspace(input: DeleteWorkspaceInput!): DeleteWorkspacePayload!
   login(input: LoginInput!): AuthPayload!
   signup(input: SignupInput!): AuthPayload!
   updateUser(input: UpdateUserInput!): User!
+  updateWorkspace(input: UpdateWorkspaceInput!): Workspace!
 }
 
 type Query {
   me: User!
+  workspace(input: WorkspaceInput!): Workspace!
+  workspaces: [Workspace!]!
 }
 
 input SignupInput {
@@ -34,8 +55,22 @@ input UpdateUserInput {
   password: String
 }
 
+input UpdateWorkspaceInput {
+  id: String!
+  name: String!
+}
+
 type User {
   email: String!
   id: ID!
   name: String!
+}
+
+type Workspace {
+  id: ID!
+  name: String!
+}
+
+input WorkspaceInput {
+  id: ID!
 }

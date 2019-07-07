@@ -26,14 +26,18 @@ class User extends Model {
   }
 
   static get relationMappings() {
-    const { Workspace } = require('./workspace');
+    const Workspace = require('./workspace').default;
 
     return {
-      workspace: {
-        relation: Model.HasOneRelation,
+      workspaces: {
+        relation: Model.ManyToManyRelation,
         modelClass: Workspace,
         join: {
-          from: 'users.workspaceId',
+          from: 'users.id',
+          through: {
+            from: 'users_workspaces.userId',
+            to: 'users_workspaces.workspaceId'
+          },
           to: 'workspaces.id'
         }
       }

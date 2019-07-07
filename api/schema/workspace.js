@@ -1,5 +1,4 @@
 import { objectType, inputObjectType, queryField, mutationField, arg } from 'nexus';
-import ValidationErrors from '../lib/validation-errors';
 import Workspace from '../models/workspace';
 
 export const WorkspaceType = objectType({
@@ -14,9 +13,9 @@ export const WorkspacesQuery = queryField('workspaces', {
   type: WorkspaceType,
   list: true,
   resolve: async (parent, args, ctx) => {
-    const owner = ctx.user;
+    // TODO: - make the function take in an owner argument.
     const query = Workspace.query();
-    const relatedIds = await owner.$relatedQuery('workspaces').map(({ id }) => id);
+    const relatedIds = await ctx.user.$relatedQuery('workspaces').map(({ id }) => id);
     return query.where('id', 'IN', relatedIds);
   }
 });
@@ -38,6 +37,7 @@ export const CreateWorkspaceMutation = mutationField('createWorkspace', {
   },
   resolve: async (parent, { input }, ctx) => {
     const workspace = await Workspace.query().insert(input);
+    // TODO: - make the function take in an owner argument.
     await workspace.$relatedQuery('users').relate(ctx.user.id);
     return workspace;
   }
@@ -80,7 +80,7 @@ export const DeleteWorkspaceMutation = mutationField('deleteWorkspace', {
       required: true
     })
   },
-  resolve: async (parent, { input }, ctx) => {
+  resolve: async (parent, { input }) => {
     const { id } = input;
     return { count: await Workspace.query().deleteById(id) };
   }

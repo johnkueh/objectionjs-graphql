@@ -19,6 +19,10 @@ input DeleteWorkspaceInput {
   id: String!
 }
 
+type DeleteWorkspacePayload {
+  count: Int!
+}
+
 input LoginInput {
   email: String!
   password: String!
@@ -26,7 +30,7 @@ input LoginInput {
 
 type Mutation {
   createWorkspace(input: CreateWorkspaceInput!): Workspace!
-  deleteWorkspace(input: DeleteWorkspaceInput!): DeletePayload!
+  deleteWorkspace(input: DeleteWorkspaceInput!): DeleteWorkspacePayload!
   login(input: LoginInput!): AuthPayload!
   signup(input: SignupInput!): AuthPayload!
   updateUser(input: UpdateUserInput!): User!

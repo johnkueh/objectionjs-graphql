@@ -50,6 +50,9 @@ export interface NexusGenRootTypes {
   DeletePayload: { // root type
     count: number; // Int!
   }
+  DeleteWorkspacePayload: { // root type
+    count: number; // Int!
+  }
   Mutation: {};
   Query: {};
   User: { // root type
@@ -85,9 +88,12 @@ export interface NexusGenFieldTypes {
   DeletePayload: { // field return type
     count: number; // Int!
   }
+  DeleteWorkspacePayload: { // field return type
+    count: number; // Int!
+  }
   Mutation: { // field return type
     createWorkspace: NexusGenRootTypes['Workspace']; // Workspace!
-    deleteWorkspace: NexusGenRootTypes['DeletePayload']; // DeletePayload!
+    deleteWorkspace: NexusGenRootTypes['DeleteWorkspacePayload']; // DeleteWorkspacePayload!
     login: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     signup: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     updateUser: NexusGenRootTypes['User']; // User!
@@ -136,7 +142,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "DeletePayload" | "Mutation" | "Query" | "User" | "Workspace";
+export type NexusGenObjectNames = "AuthPayload" | "DeletePayload" | "DeleteWorkspacePayload" | "Mutation" | "Query" | "User" | "Workspace";
 
 export type NexusGenInputNames = "CreateWorkspaceInput" | "DeleteWorkspaceInput" | "LoginInput" | "SignupInput" | "UpdateUserInput" | "UpdateWorkspaceInput";
 

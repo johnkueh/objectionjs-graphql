@@ -7,3 +7,15 @@ factory.define('user', User, {
   password: 'test-password',
   workspaceId: null
 });
+
+factory.extend(
+  'user',
+  'userWithWorkspace',
+  {},
+  {
+    afterCreate: async (model, attrs, buildOptions) => {
+      await model.$relatedQuery('workspaces').insert({ name: 'User Workspace' });
+      return model;
+    }
+  }
+);

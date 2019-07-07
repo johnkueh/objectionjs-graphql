@@ -6,7 +6,8 @@ import { isWorkspaceOwner } from './is-workspace-owner';
 export const permissions = shield(
   {
     Query: {
-      '*': isAuthenticated
+      '*': isAuthenticated,
+      workspace: and(isAuthenticated, isWorkspaceOwner)
     },
     Mutation: {
       '*': isAuthenticated,

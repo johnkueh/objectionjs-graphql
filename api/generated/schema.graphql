@@ -39,6 +39,7 @@ type Mutation {
 
 type Query {
   me: User!
+  workspace(input: WorkspaceInput!): Workspace!
   workspaces: [Workspace!]!
 }
 
@@ -68,4 +69,8 @@ type User {
 type Workspace {
   id: ID!
   name: String!
+}
+
+input WorkspaceInput {
+  id: ID!
 }

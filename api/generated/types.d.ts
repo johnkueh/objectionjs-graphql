@@ -37,6 +37,9 @@ export interface NexusGenInputs {
     id: string; // String!
     name: string; // String!
   }
+  WorkspaceInput: { // input type
+    id: string; // ID!
+  }
 }
 
 export interface NexusGenEnums {
@@ -78,6 +81,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   SignupInput: NexusGenInputs['SignupInput'];
   UpdateUserInput: NexusGenInputs['UpdateUserInput'];
   UpdateWorkspaceInput: NexusGenInputs['UpdateWorkspaceInput'];
+  WorkspaceInput: NexusGenInputs['WorkspaceInput'];
 }
 
 export interface NexusGenFieldTypes {
@@ -101,6 +105,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     me: NexusGenRootTypes['User']; // User!
+    workspace: NexusGenRootTypes['Workspace']; // Workspace!
     workspaces: NexusGenRootTypes['Workspace'][]; // [Workspace!]!
   }
   User: { // field return type
@@ -135,6 +140,11 @@ export interface NexusGenArgTypes {
       input: NexusGenInputs['UpdateWorkspaceInput']; // UpdateWorkspaceInput!
     }
   }
+  Query: {
+    workspace: { // args
+      input: NexusGenInputs['WorkspaceInput']; // WorkspaceInput!
+    }
+  }
 }
 
 export interface NexusGenAbstractResolveReturnTypes {
@@ -144,7 +154,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "AuthPayload" | "DeletePayload" | "DeleteWorkspacePayload" | "Mutation" | "Query" | "User" | "Workspace";
 
-export type NexusGenInputNames = "CreateWorkspaceInput" | "DeleteWorkspaceInput" | "LoginInput" | "SignupInput" | "UpdateUserInput" | "UpdateWorkspaceInput";
+export type NexusGenInputNames = "CreateWorkspaceInput" | "DeleteWorkspaceInput" | "LoginInput" | "SignupInput" | "UpdateUserInput" | "UpdateWorkspaceInput" | "WorkspaceInput";
 
 export type NexusGenEnumNames = never;
 

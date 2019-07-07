@@ -1,4 +1,5 @@
-import { objectType, inputObjectType, queryField, mutationField, arg } from 'nexus';
+import lowerCase from 'lodash/lowerCase';
+import { objectType, inputObjectType, queryField, mutationField, arg, idArg } from 'nexus';
 
 export const crudType = ({ model, owner, modelFields, createInputFields, updateInputFields }) => {
   const ModelType = objectType({
@@ -21,7 +22,25 @@ export const crudType = ({ model, owner, modelFields, createInputFields, updateI
     }
   });
 
-  const ResourceQuery = {};
+  const ResourceInputType = inputObjectType({
+    name: `${model.name}Input`,
+    definition(t) {
+      t.id('id', { required: true });
+    }
+  });
+
+  const ResourceQuery = queryField(lowerCase(model.name), {
+    type: ModelType,
+    args: {
+      input: arg({
+        type: ResourceInputType,
+        required: true
+      })
+    },
+    resolve: async (parent, { input }, ctx) => {
+      return model.query().findById(input.id);
+    }
+  });
 
   const CreateInputType = inputObjectType({
     name: `Create${model.name}Input`,
@@ -95,7 +114,7 @@ export const crudType = ({ model, owner, modelFields, createInputFields, updateI
   return {
     ModelType,
     CollectionQuery,
-    // ResourceQuery: {},
+    ResourceQuery,
     CreateInputType,
     CreateMutation,
     UpdateInputType,

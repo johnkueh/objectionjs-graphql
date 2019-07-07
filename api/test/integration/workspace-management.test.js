@@ -53,11 +53,78 @@ describe('Fetching workspaces', () => {
 });
 
 describe('Fetching a workspace', () => {
-  it('is able to fetch a user workspace', async () => {});
+  let user;
+  const WORKSPACE = `
+    query($input: WorkspaceInput!) {
+      workspace(input: $input) {
+        id
+        name
+      }
+    }
+  `;
 
-  it('is able to fetch a user workspace without login', async () => {});
+  beforeEach(async () => {
+    user = await factory.create('userWithWorkspace', {
+      email: 'john@doe.com',
+      password: 'password'
+    });
+    user.workspaces = await user.$relatedQuery('workspaces');
+  });
 
-  it("is not able to fetch other user's workspace", async () => {});
+  it('is able to fetch a user workspace', async () => {
+    const res = await request({
+      handler,
+      apiPath: path,
+      cookies: [`jwt=${user.jwt}`],
+      query: WORKSPACE,
+      variables: {
+        input: {
+          id: user.workspaces[0].id
+        }
+      }
+    });
+
+    expect(res.data.workspace).toEqual({
+      id: expect.any(String),
+      name: user.workspaces[0].name
+    });
+  });
+
+  it('is not able to fetch a user workspace without login', async () => {
+    const res = await request({
+      handler,
+      apiPath: path,
+      query: WORKSPACE,
+      variables: {
+        input: {
+          id: user.workspaces[0].id
+        }
+      }
+    });
+
+    expect(res.errors[0].extensions.exception.errors).toEqual({
+      auth: 'You are not authorized to perform this action'
+    });
+  });
+
+  it("is not able to fetch other user's workspace", async () => {
+    const workspace = await factory.create('workspace', { name: 'Other workspace ' });
+    const res = await request({
+      handler,
+      apiPath: path,
+      cookies: [`jwt=${user.jwt}`],
+      query: WORKSPACE,
+      variables: {
+        input: {
+          id: workspace.id
+        }
+      }
+    });
+
+    expect(res.errors[0].extensions.exception.errors).toEqual({
+      auth: 'You are not authorized to perform this action'
+    });
+  });
 });
 
 describe('Creating workspaces', () => {

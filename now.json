@@ -12,6 +12,14 @@
       "dest": "/api/src/index.js"
     },
     {
+      "src": "^/workspaces/(.*)/edit$",
+      "dest": "/web/workspaces/edit?id=$1"
+    },
+    {
+      "src": "^/workspaces/(.*)$",
+      "dest": "/web/workspaces/show?id=$1"
+    },
+    {
       "src": "^/(.*)$",
       "dest": "/web/$1",
       "headers": {

@@ -15,6 +15,9 @@ const Start = ({ user, apolloClient, logout }) => {
         <Link href="/profile">
           <a href="/profile">Profile</a>
         </Link>
+        <Link href="/workspaces">
+          <a href="/workspaces">Workspaces</a>
+        </Link>
       </div>
       <button
         type="button"

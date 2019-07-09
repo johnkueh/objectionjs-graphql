@@ -26,7 +26,7 @@ const Edit = ({
       await updateWorkspace({
         variables: { input }
       });
-      Router.push(`/workspaces/show?id=${id}`);
+      Router.push(`/workspaces/${id}`);
     }
   });
 

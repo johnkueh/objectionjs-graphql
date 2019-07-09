@@ -2,8 +2,8 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from 'react-apollo-hooks';
 import Router, { withRouter } from 'next/router';
-import Link from 'next/link';
 import { WORKSPACES } from './index';
+import NavLink from '../../components/nav-link';
 import PageLoading from '../../components/page-loading';
 import { withAuth } from '../../lib/with-auth';
 
@@ -25,9 +25,9 @@ const Show = ({
       <h1>Workspace</h1>
       <p>{workspace.name}</p>
       <div>
-        <Link href={`/workspaces/edit?id=${id}`} as={`/workspaces/${id}/edit`}>
-          <a href={`/workspaces/${id}/edit`}>Edit</a>
-        </Link>
+        <NavLink href={`/workspaces/edit?id=${id}`} as={`/workspaces/${id}/edit`}>
+          Edit
+        </NavLink>
         <button
           onClick={async () => {
             if (window.confirm('Delete this workspace?')) {
@@ -47,9 +47,7 @@ const Show = ({
       </div>
       <hr />
       <div>
-        <Link href="/workspaces">
-          <a href="/workspaces">Workspaces</a>
-        </Link>
+        <NavLink href="/workspaces">Workspaces</NavLink>
       </div>
     </>
   );

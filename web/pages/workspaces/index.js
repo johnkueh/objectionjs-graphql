@@ -1,8 +1,8 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from 'react-apollo-hooks';
-import Link from 'next/link';
 import PageLoading from '../../components/page-loading';
+import NavLink from '../../components/nav-link';
 import { withAuth } from '../../lib/with-auth';
 
 const Workspaces = () => {
@@ -19,17 +19,15 @@ const Workspaces = () => {
       <div>
         {workspaces.map(({ id, name }) => (
           <div key={id}>
-            <Link href={`/workspaces/show?id=${id}`} as={`/workspaces/${id}`}>
-              <a href={`/workspaces/${id}`}>{name}</a>
-            </Link>
+            <NavLink href={`/workspaces/show?id=${id}`} as={`/workspaces/${id}`}>
+              {name}
+            </NavLink>
           </div>
         ))}
       </div>
       <hr />
       <div>
-        <Link href="/workspaces/new">
-          <a href="/workspaces/new">Add new</a>
-        </Link>
+        <NavLink href="/workspaces/new">Add new</NavLink>
       </div>
     </>
   );

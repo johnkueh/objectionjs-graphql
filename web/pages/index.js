@@ -1,19 +1,15 @@
 import React from 'react';
-import Link from 'next/link';
+import NavLink from '../components/nav-link';
 
 const Index = () => {
   return (
     <div>
       <h1>ObjectionJS GraphQL Starter</h1>
       <div>
-        <Link>
-          <a href="/signup">Sign up</a>
-        </Link>
+        <NavLink href="/signup">Sign up</NavLink>
       </div>
       <div>
-        <Link>
-          <a href="/login">Login</a>
-        </Link>
+        <NavLink href="/login">Login</NavLink>
       </div>
     </div>
   );

@@ -3,9 +3,9 @@ import get from 'lodash/get';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from 'react-apollo-hooks';
 import Router, { withRouter } from 'next/router';
-import Link from 'next/link';
 import { WORKSPACE } from './show';
 import PageLoading from '../../components/page-loading';
+import NavLink from '../../components/nav-link';
 import { withAuth } from '../../lib/with-auth';
 import { useFormik } from '../../hooks/use-formik';
 import Button from '../../components/button';
@@ -43,15 +43,13 @@ const Edit = ({
         </Button>
       </Formik.Form>
       <div>
-        <Link href={`/workspaces/show?id=${id}`} as={`/workspaces/${id}`}>
-          <a href={`/workspaces/${id}`}>View</a>
-        </Link>
+        <NavLink href={`/workspaces/show?id=${id}`} as={`/workspaces/${id}`}>
+          View
+        </NavLink>
       </div>
       <hr />
       <div>
-        <Link href="/workspaces">
-          <a href="/workspaces">Workspaces</a>
-        </Link>
+        <NavLink href="/workspaces">Workspaces</NavLink>
       </div>
     </>
   );

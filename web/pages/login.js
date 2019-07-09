@@ -1,10 +1,10 @@
 import React from 'react';
 import Router from 'next/router';
-import Link from 'next/link';
 import gql from 'graphql-tag';
 import Cookies from 'js-cookie';
 import { useMutation } from 'react-apollo-hooks';
 import { useFormik } from '../hooks/use-formik';
+import NavLink from '../components/nav-link';
 import Button from '../components/button';
 import AlertMessages from '../components/alert-messages';
 
@@ -36,12 +36,8 @@ const Login = () => {
           Log in
         </Button>
         <p>Dont have an account?&nbsp;</p>
-        <Link href="/signup">
-          <a href="/signup">Sign up</a>
-        </Link>
-        <Link href="/start">
-          <a href="/start">Start</a>
-        </Link>
+        <NavLink href="/signup">Sign up</NavLink>
+        <NavLink href="/start">Start</NavLink>
       </Formik.Form>
     </>
   );

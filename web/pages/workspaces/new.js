@@ -1,11 +1,11 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import { useMutation } from 'react-apollo-hooks';
-import Link from 'next/link';
 import Router from 'next/router';
 import { WORKSPACES } from './index';
 import { withAuth } from '../../lib/with-auth';
 import { useFormik } from '../../hooks/use-formik';
+import NavLink from '../../components/nav-link';
 import Button from '../../components/button';
 
 const New = () => {
@@ -32,9 +32,7 @@ const New = () => {
         </Button>
       </Formik.Form>
       <div>
-        <Link href="/workspaces">
-          <a href="/workspaces">Workspaces</a>
-        </Link>
+        <NavLink href="/workspaces">Workspaces</NavLink>
       </div>
     </>
   );

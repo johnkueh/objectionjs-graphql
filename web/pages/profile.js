@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useMutation } from 'react-apollo-hooks';
-import Link from 'next/link';
 import { useFormik } from '../hooks/use-formik';
 import { withAuth } from '../lib/with-auth';
+import NavLink from '../components/nav-link';
 import Button from '../components/button';
 import AlertMessages from '../components/alert-messages';
 
@@ -40,9 +40,7 @@ const Profile = ({ user: { email, name } }) => {
       </Formik.Form>
 
       <div>
-        <Link href="/start">
-          <a href="/start">Start</a>
-        </Link>
+        <NavLink href="/start">Start</NavLink>
       </div>
     </>
   );

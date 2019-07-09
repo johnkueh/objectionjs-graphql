@@ -1,7 +1,7 @@
 import React from 'react';
-import Link from 'next/link';
 import Router from 'next/router';
 import { withAuth } from '../lib/with-auth';
+import NavLink from '../components/nav-link';
 
 const Start = ({ user, apolloClient, logout }) => {
   return (
@@ -12,12 +12,8 @@ const Start = ({ user, apolloClient, logout }) => {
         {user.email}
       </p>
       <div>
-        <Link href="/profile">
-          <a href="/profile">Profile</a>
-        </Link>
-        <Link href="/workspaces">
-          <a href="/workspaces">Workspaces</a>
-        </Link>
+        <NavLink href="/profile">Profile</NavLink>
+        <NavLink href="/workspaces">Workspaces</NavLink>
       </div>
       <button
         type="button"

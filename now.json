@@ -12,15 +12,15 @@
       "dest": "/api/src/index.js"
     },
     {
-      "src": "^/workspaces/(.*)/edit$",
+      "src": "/workspaces/(.*)/edit",
       "dest": "/web/workspaces/edit?id=$1"
     },
     {
-      "src": "^/workspaces/(.*)$",
+      "src": "/workspaces/(.*)",
       "dest": "/web/workspaces/show?id=$1"
     },
     {
-      "src": "^/(.*)$",
+      "src": "/(.*)",
       "dest": "/web/$1",
       "headers": {
         "x-request-path": "$1"

@@ -1,53 +1,45 @@
 import React from 'react';
-import Router from 'next/router';
 import gql from 'graphql-tag';
-import Cookies from 'js-cookie';
 import { useMutation } from 'react-apollo-hooks';
 import { useForm } from '../hooks/use-form';
-import NavLink from '../components/nav-link';
-import Button from '../components/button';
 import AlertMessages from '../components/alert-messages';
 
-const Login = () => {
+const Test = () => {
   const login = useMutation(LOGIN);
   const { formProps, fieldProps, errors, submitting } = useForm({
     initialValues: {
-      email: '',
+      email: 'hello@beaconmaker.com',
       password: ''
     },
     onSubmit: async ({ currentValues, setSubmitting }) => {
-      const {
-        data: {
-          login: { jwt }
+      const { email, password } = currentValues;
+      await login({
+        variables: {
+          input: { email, password }
         }
-      } = await login({
-        variables: { input: currentValues }
       });
       setSubmitting(false);
-      Cookies.set('jwt', jwt);
-      Router.push('/start');
     }
   });
 
   return (
-    <>
-      <h2>Login</h2>
+    <div>
+      <h3>Test form</h3>
       <form {...formProps()}>
         <AlertMessages messages={{ warning: errors }} />
         <label>Email</label>
         <input {...fieldProps('email')} type="email" placeholder="john@doe.com" />
         <label>Password</label>
         <input {...fieldProps('password')} type="password" placeholder="Your password" />
-        <Button loading={submitting} loadingText="Logging in..." type="submit">
-          Log in
-        </Button>
-        <p>
-          <NavLink href="/signup">Sign up</NavLink>
-        </p>
+        <button disabled={submitting} type="submit">
+          Submit
+        </button>
       </form>
-    </>
+    </div>
   );
 };
+
+export default Test;
 
 const LOGIN = gql`
   mutation($input: LoginInput!) {
@@ -61,5 +53,3 @@ const LOGIN = gql`
     }
   }
 `;
-
-export default Login;

@@ -34,7 +34,7 @@ const Signup = () => {
         <Formik.Field name="password" type="password" placeholder="Password" />
         <Formik.Field name="name" type="text" placeholder="Name" />
         <Button loading={Formik.isSubmitting} loadingText="Submitting..." type="submit">
-          Log in
+          Sign up
         </Button>
         <p>Have an account?&nbsp;</p>
         <NavLink href="/login">Log in</NavLink>

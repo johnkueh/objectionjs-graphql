@@ -1,7 +1,7 @@
 import React from 'react';
 import App, { Container } from 'next/app';
 import Head from 'next/head';
-import Router from 'next/router';
+import Router, { withRouter } from 'next/router';
 import NProgress from 'nprogress';
 import { ApolloProvider } from 'react-apollo-hooks';
 import withApolloClient from '../lib/with-apollo-client';
@@ -16,7 +16,7 @@ Router.events.on('routeChangeError', () => NProgress.done());
 
 class MyApp extends App {
   render() {
-    const { Component, pageProps, apolloClient } = this.props;
+    const { Component, pageProps, router, apolloClient } = this.props;
 
     return (
       <>
@@ -25,7 +25,7 @@ class MyApp extends App {
         </Head>
         <Container>
           <ApolloProvider client={apolloClient}>
-            <Component {...pageProps} apolloClient={apolloClient} />
+            <Component {...pageProps} router={router} apolloClient={apolloClient} />
           </ApolloProvider>
         </Container>
       </>
@@ -33,4 +33,4 @@ class MyApp extends App {
   }
 }
 
-export default withApolloClient(MyApp);
+export default withApolloClient(withRouter(MyApp));

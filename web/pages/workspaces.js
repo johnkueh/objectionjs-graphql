@@ -1,10 +1,9 @@
-import get from 'lodash/get';
-import React, { useState, useReducer, useEffect } from 'react';
+import React, { useReducer } from 'react';
 import gql from 'graphql-tag';
 import { useQuery, useMutation } from 'react-apollo-hooks';
 import PageLoading from '../components/page-loading';
 import { withAuth } from '../lib/with-auth';
-import { useError } from '../hooks/use-error';
+import { useForm } from '../hooks/use-form';
 import Button from '../components/button';
 import AlertMessages from '../components/alert-messages';
 
@@ -55,43 +54,27 @@ const Workspace = ({ router: { query } }) => {
 
 const Create = ({ dispatch }) => {
   const createWorkspace = useMutation(CREATE_WORKSPACE);
-  const [name, setName] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [errorMessages, setError, initialState] = useError();
+  const { formProps, fieldProps, errors, submitting } = useForm({
+    initialValues: {
+      name: ''
+    },
+    onSubmit: async ({ currentValues, setSubmitting }) => {
+      await createWorkspace({
+        variables: {
+          input: currentValues
+        },
+        refetchQueries: [{ query: WORKSPACES }]
+      });
+      dispatch({ type: HIDE_CREATE });
+    }
+  });
 
   return (
     <>
-      <AlertMessages messages={{ warning: errorMessages }} />
-      <form
-        onSubmit={async e => {
-          e.preventDefault();
-          setError(initialState);
-          setSubmitting(true);
-          try {
-            await createWorkspace({
-              variables: {
-                input: {
-                  name
-                }
-              },
-              refetchQueries: [{ query: WORKSPACES }]
-            });
-            setSubmitting(false);
-            dispatch({ type: HIDE_CREATE });
-          } catch (error) {
-            setError(error);
-            setSubmitting(false);
-          }
-        }}
-      >
+      <AlertMessages messages={{ warning: errors }} />
+      <form {...formProps()}>
         <label>Name</label>
-        <input
-          value={name}
-          onChange={e => setName(e.target.value)}
-          name="name"
-          type="name"
-          placeholder="Name"
-        />
+        <input {...fieldProps('name')} type="name" placeholder="Name" />
         <Button loading={submitting} loadingText="Submitting..." type="submit">
           Save
         </Button>
@@ -114,46 +97,32 @@ const Edit = ({ id, dispatch }) => {
     loading,
     data: { workspace }
   } = useQuery(WORKSPACE, { variables: { input: { id } } });
-  const [name, setName] = useState(get(workspace, 'name', ''));
-  const [submitting, setSubmitting] = useState(false);
-  const [errorMessages, setError, initialState] = useError();
-  const updateWorkspace = useMutation(UPDATE_WORKSPACE);
-  const deleteWorkspace = useMutation(DELETE_WORKSPACE);
-
-  useEffect(() => {
-    if (workspace) setName(workspace.name);
-  }, [workspace]);
 
   if (!workspace) return null;
 
+  return <EditForm key={workspace.id} workspace={workspace} dispatch={dispatch} />;
+};
+
+const EditForm = ({ workspace, dispatch }) => {
+  const updateWorkspace = useMutation(UPDATE_WORKSPACE);
+  const deleteWorkspace = useMutation(DELETE_WORKSPACE);
+  const { formProps, fieldProps, errors, submitting } = useForm({
+    initialValues: { name: workspace.name },
+    onSubmit: async ({ currentValues: { name }, setSubmitting }) => {
+      await updateWorkspace({
+        variables: { input: { id: workspace.id, name } }
+      });
+      setSubmitting(false);
+      dispatch({ type: HIDE_EDIT });
+    }
+  });
+
   return (
     <>
-      <AlertMessages messages={{ warning: errorMessages }} />
-      <form
-        onSubmit={async e => {
-          e.preventDefault();
-          setSubmitting(true);
-          setError(initialState);
-          try {
-            await updateWorkspace({
-              variables: { input: { id, name } }
-            });
-            setSubmitting(false);
-            dispatch({ type: HIDE_EDIT });
-          } catch (error) {
-            setError(error);
-            setSubmitting(false);
-          }
-        }}
-      >
+      <AlertMessages messages={{ warning: errors }} />
+      <form {...formProps()}>
         <label>Name</label>
-        <input
-          value={name}
-          onChange={e => setName(e.target.value)}
-          name="name"
-          type="name"
-          placeholder="Name"
-        />
+        <input {...fieldProps('name')} type="name" placeholder="Name" />
         <Button loading={submitting} loadingText="Submitting..." type="submit">
           Save
         </Button>
@@ -163,7 +132,7 @@ const Edit = ({ id, dispatch }) => {
           e.preventDefault();
           await deleteWorkspace({
             variables: {
-              input: { id }
+              input: { id: workspace.id }
             },
             refetchQueries: [{ query: WORKSPACES }]
           });

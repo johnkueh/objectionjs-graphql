@@ -14,6 +14,13 @@ export const useForm = ({ initialValues, onSubmit }) => {
     ...state,
     errors,
     submitting,
+    setValue: (key, value) => {
+      dispatch({
+        type: 'SET_VALUE',
+        name: key,
+        value
+      });
+    },
     formProps: () => ({
       onSubmit: async e => {
         e.preventDefault();

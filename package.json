@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "nexus": "cd api && yarn nexus",
-    "cypress": "cd api && cypress open",
+    "cypress": "cd api && yarn cypress",
     "now:dev": "now dev",
     "dev": "npm-run-all --parallel nexus now:dev cypress"
   },

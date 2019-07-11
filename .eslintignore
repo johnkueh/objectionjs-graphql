@@ -3,5 +3,6 @@
 /api/migrations
 /api/models
 /api/seeds
+/api/cypress
 
 /web/lib

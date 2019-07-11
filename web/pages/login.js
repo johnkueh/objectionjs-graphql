@@ -35,10 +35,20 @@ const Login = () => {
       <form {...formProps()}>
         <AlertMessages messages={{ warning: errors }} />
         <label>Email</label>
-        <input {...fieldProps('email')} type="email" placeholder="john@doe.com" />
+        <input
+          data-testid="email"
+          {...fieldProps('email')}
+          type="email"
+          placeholder="john@doe.com"
+        />
         <label>Password</label>
-        <input {...fieldProps('password')} type="password" placeholder="Your password" />
-        <Button loading={submitting} loadingText="Logging in..." type="submit">
+        <input
+          data-testid="password"
+          {...fieldProps('password')}
+          type="password"
+          placeholder="Your password"
+        />
+        <Button data-testid="submit" loading={submitting} loadingText="Logging in..." type="submit">
           Log in
         </Button>
         <p>

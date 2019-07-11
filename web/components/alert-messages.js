@@ -5,7 +5,13 @@ import Alert from './alert';
 
 const AlertMessages = ({ messages }) => {
   if (messages) {
-    return _.map(messages, (content, type) => <Alert key={type} type={type} messages={content} />);
+    return (
+      <div data-testid="alerts">
+        {_.map(messages, (content, type) => (
+          <Alert key={type} type={type} messages={content} />
+        ))}
+      </div>
+    );
   }
 
   return <></>;

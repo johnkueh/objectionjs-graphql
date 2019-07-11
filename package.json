@@ -7,10 +7,12 @@
   "scripts": {
     "nexus": "cd api && yarn nexus",
     "now:dev": "now dev",
-    "dev": "npm-run-all --parallel nexus now:dev"
+    "cypress": "cypress open",
+    "dev": "npm-run-all --parallel nexus now:dev cypress"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
+    "cypress": "^3.4.0",
     "eslint": "^5.6.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^4.0.0",

@@ -6,8 +6,9 @@
   "private": true,
   "scripts": {
     "nexus": "cd api && yarn nexus",
+    "cypress": "cd api && yarn cypress",
     "now:dev": "now dev",
-    "dev": "npm-run-all --parallel nexus now:dev"
+    "dev": "npm-run-all --parallel nexus now:dev cypress"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

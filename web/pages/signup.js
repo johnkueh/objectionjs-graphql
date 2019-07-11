@@ -36,12 +36,22 @@ const Signup = () => {
       <form {...formProps()}>
         <AlertMessages messages={{ warning: errors }} />
         <label>Email</label>
-        <input {...fieldProps('email')} type="email" placeholder="john@doe.com" />
+        <input
+          data-testid="email"
+          {...fieldProps('email')}
+          type="email"
+          placeholder="john@doe.com"
+        />
         <label>Password</label>
-        <input {...fieldProps('password')} type="password" placeholder="Your password" />
+        <input
+          data-testid="password"
+          {...fieldProps('password')}
+          type="password"
+          placeholder="Your password"
+        />
         <label>Name</label>
-        <input {...fieldProps('name')} type="text" placeholder="John Doe" />
-        <Button loading={submitting} loadingText="Submitting..." type="submit">
+        <input data-testid="name" {...fieldProps('name')} type="text" placeholder="John Doe" />
+        <Button data-testid="submit" loading={submitting} loadingText="Submitting..." type="submit">
           Sign up
         </Button>
         <p>

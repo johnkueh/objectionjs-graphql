@@ -1,7 +1,8 @@
 {
   "scripts": {
     "test": "jest --watch --runInBand",
-    "nexus": "nodemon --exec babel-node nexus.js"
+    "nexus": "nodemon --exec babel-node nexus.js",
+    "cypress": "cypress open"
   },
   "dependencies": {
     "apollo-server-micro": "^2.7.0-alpha.3",
@@ -48,6 +49,7 @@
     "jest": "^24.8.0",
     "nodemon": "^1.19.0",
     "prettier": "^1.16.4",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "cypress": "^3.4.0"
   }
 }

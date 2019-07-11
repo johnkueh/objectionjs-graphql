@@ -6,7 +6,7 @@ describe('logging in', () => {
         email: 'john@doe.com',
         password: 'password'
       }
-    });
+    }).as('user');
   });
 
   it('with wrong credentials shows error messages', () => {
@@ -22,12 +22,14 @@ describe('logging in', () => {
   });
 
   it('with correct credentials is successful', () => {
-    cy.visit('/login');
-    cy.get('[data-testid=email]').type('john@doe.com');
-    cy.get('[data-testid=password]').type('password');
-    cy.get('[data-testid=submit]').click();
+    cy.get('@user').then(user => {
+      cy.visit('/login');
+      cy.get('[data-testid=email]').type(user.email);
+      cy.get('[data-testid=password]').type('password');
+      cy.get('[data-testid=submit]').click();
 
-    cy.url().should('include', '/start');
+      cy.url().should('include', '/start');
+    });
   });
 });
 
@@ -64,15 +66,15 @@ describe('signing up', () => {
         email: 'john@doe.com',
         password: 'password'
       }
+    }).then(user => {
+      cy.visit('/signup');
+      cy.get('[data-testid=email]').type(user.email);
+      cy.get('[data-testid=name]').type('John Doe');
+      cy.get('[data-testid=password]').type('testpassword');
+      cy.get('[data-testid=submit]').click();
+
+      cy.get('[data-testid="alerts"]').should('contain', 'Email is already taken');
     });
-
-    cy.visit('/signup');
-    cy.get('[data-testid=name]').type('John Doe');
-    cy.get('[data-testid=email]').type('john@doe.com');
-    cy.get('[data-testid=password]').type('testpassword');
-    cy.get('[data-testid=submit]').click();
-
-    cy.get('[data-testid="alerts"]').should('contain', 'Email is already taken');
   });
 
   it('with valid fields is successful', () => {

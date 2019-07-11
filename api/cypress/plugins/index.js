@@ -11,6 +11,8 @@ require('@babel/register')({
   ]
 });
 
+require('../../test/factories');
+const factory = require('factory-girl').factory;
 const Knex = require('knex');
 const { Model } = require('objection');
 const connection = require('../../knexfile');
@@ -25,6 +27,12 @@ module.exports = (on, config) => {
       return User.query()
         .delete()
         .where('email', email);
+    },
+
+    factoryCreate(params) {
+      const type = Object.keys(params)[0];
+      const overrides = Object.values(params)[0];
+      return factory.create(type, overrides);
     }
   });
 };

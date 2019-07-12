@@ -54,8 +54,12 @@ const Workspace = ({ router: { query } }) => {
           Add new
         </a>
       </div>
-      {isCreating && <Create />}
-      {isEditing && <Edit />}
+      {isCreating && (
+        <Create fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]} />
+      )}
+      {isEditing && (
+        <Edit fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]} />
+      )}
     </>
   );
 };

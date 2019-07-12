@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import Router from 'next/router';
 import { withAuth } from '../lib/with-auth';
 import Nav from '../components/nav';
+import Modal from '../components/modal';
 import { useList } from '../hooks/use-list';
 import { useCrud } from '../hooks/use-crud';
 
@@ -64,18 +65,22 @@ const Workspace = ({ router: { query, push } }) => {
         </div>
         <hr />
         {isCreating && (
-          <Create
-            fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
-            onSuccess={goToList}
-            onCancel={goToList}
-          />
+          <Modal onHide={goToList}>
+            <Create
+              fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
+              onSuccess={goToList}
+              onCancel={goToList}
+            />
+          </Modal>
         )}
         {isEditing && (
-          <Edit
-            fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
-            onSuccess={goToList}
-            onCancel={goToList}
-          />
+          <Modal onHide={goToList}>
+            <Edit
+              fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
+              onSuccess={goToList}
+              onCancel={goToList}
+            />
+          </Modal>
         )}
         {!isCreating && !isEditing && (
           <div className="mt-8">

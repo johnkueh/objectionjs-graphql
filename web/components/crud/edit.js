@@ -61,7 +61,7 @@ const EditForm = ({
 
   return (
     <>
-      <form className="mt-8 max-w-xs bg-white shadow-md rounded p-6" {...formProps()}>
+      <form className="mt-8 bg-white shadow-md rounded p-6" {...formProps()}>
         <h3 className="text-lg font-medium mb-5">
           Edit&nbsp;
           {modelName}

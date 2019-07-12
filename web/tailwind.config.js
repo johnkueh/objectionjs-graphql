@@ -3,7 +3,11 @@ module.exports = {
     container: {
       center: true
     },
-    extend: {}
+    extend: {
+      colors: {
+        'gray-transparent': 'rgba(66, 66, 66, 0.8)'
+      }
+    }
   },
   variants: {},
   plugins: []

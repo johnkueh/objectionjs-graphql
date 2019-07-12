@@ -29,7 +29,7 @@ const Create = ({ modelName, fields, onCancel, onSuccess, collectionQuery, creat
   return (
     <>
       <form
-        className="mt-8 max-w-xs bg-white shadow-md rounded p-6"
+        className="mt-8 bg-white shadow-md rounded p-6"
         data-testid={`${modelName}-create-form`}
         {...formProps()}
       >

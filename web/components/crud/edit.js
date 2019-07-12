@@ -5,48 +5,46 @@ import Button from '../button';
 import AlertMessages from '../alert-messages';
 import { useForm } from '../../hooks/use-form';
 
-const Edit = ({
-  modelName,
-  id,
-  dispatch,
-  resourceQuery,
-  collectionQuery,
-  updateMutation,
-  deleteMutation
-}) => {
+const Edit = props => {
+  const { id, modelName, resourceQuery, ...editProps } = props;
   const { loading, data } = useQuery(resourceQuery, { variables: { input: { id } } });
   const resource = data[modelName];
 
   if (!resource) return null;
 
-  return (
-    <EditForm
-      key={resource.id}
-      modelName={modelName}
-      resource={resource}
-      dispatch={dispatch}
-      collectionQuery={collectionQuery}
-      updateMutation={updateMutation}
-      deleteMutation={deleteMutation}
-    />
-  );
+  return <EditForm {...editProps} key={resource.id} modelName={modelName} resource={resource} />;
 };
 
 const EditForm = ({
   resource,
+  fields,
   modelName,
   dispatch,
   collectionQuery,
   updateMutation,
   deleteMutation
 }) => {
+  const initialValues = {};
+  fields.forEach(({ name, type }) => {
+    // TODO: Handle different types?
+    initialValues[name] = resource[name];
+  });
   const performUpdate = useMutation(updateMutation);
   const performDelete = useMutation(deleteMutation);
   const { formProps, fieldProps, errors, submitting } = useForm({
-    initialValues: { name: resource.name },
-    onSubmit: async ({ currentValues: { name }, setSubmitting }) => {
+    initialValues,
+    onSubmit: async ({ currentValues, setSubmitting }) => {
+      const inputValues = {};
+      fields.forEach(({ name }) => {
+        inputValues[name] = currentValues[name];
+      });
+
+      const input = {
+        id: resource.id,
+        ...inputValues
+      };
       await performUpdate({
-        variables: { input: { id: resource.id, name } }
+        variables: { input }
       });
       setSubmitting(false);
       dispatch({ type: actions.HIDE_EDIT });
@@ -57,8 +55,12 @@ const EditForm = ({
     <>
       <AlertMessages messages={{ warning: errors }} />
       <form {...formProps()}>
-        <label>Name</label>
-        <input {...fieldProps('name')} type="text" placeholder="Name" />
+        {fields.map(({ name, label, ...props }) => (
+          <div key={name}>
+            <label>{label}</label>
+            <input {...fieldProps(name)} {...props} />
+          </div>
+        ))}
         <Button
           data-testid={`${modelName}-form-submit`}
           loading={submitting}

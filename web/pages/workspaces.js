@@ -53,6 +53,7 @@ const Workspace = ({ router: { query } }) => {
           collectionQuery={WORKSPACES}
           createMutation={CREATE_WORKSPACE}
           dispatch={dispatch}
+          fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
         />
       )}
       {showEdit && (
@@ -64,6 +65,7 @@ const Workspace = ({ router: { query } }) => {
           updateMutation={UPDATE_WORKSPACE}
           deleteMutation={DELETE_WORKSPACE}
           dispatch={dispatch}
+          fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
         />
       )}
     </>

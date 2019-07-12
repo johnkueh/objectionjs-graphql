@@ -5,12 +5,15 @@ import Button from '../button';
 import AlertMessages from '../alert-messages';
 import { useForm } from '../../hooks/use-form';
 
-const Create = ({ modelName, dispatch, collectionQuery, createMutation }) => {
+const Create = ({ modelName, fields, dispatch, collectionQuery, createMutation }) => {
+  const initialValues = {};
+  fields.forEach(({ name, type }) => {
+    // TODO: Handle different types?
+    initialValues[name] = '';
+  });
   const performCreate = useMutation(createMutation);
   const { formProps, fieldProps, errors, submitting } = useForm({
-    initialValues: {
-      name: ''
-    },
+    initialValues,
     onSubmit: async ({ currentValues, setSubmitting }) => {
       await performCreate({
         variables: {
@@ -18,6 +21,7 @@ const Create = ({ modelName, dispatch, collectionQuery, createMutation }) => {
         },
         refetchQueries: [{ query: collectionQuery }]
       });
+      setSubmitting(false);
       dispatch({ type: actions.HIDE_CREATE });
     }
   });
@@ -26,8 +30,12 @@ const Create = ({ modelName, dispatch, collectionQuery, createMutation }) => {
     <>
       <AlertMessages messages={{ warning: errors }} />
       <form data-testid={`${modelName}-create-form`} {...formProps()}>
-        <label>Name</label>
-        <input {...fieldProps('name')} type="text" placeholder="Name" />
+        {fields.map(({ name, label, ...props }) => (
+          <div key={name}>
+            <label>{label}</label>
+            <input {...fieldProps(name)} {...props} />
+          </div>
+        ))}
         <Button
           data-testid={`${modelName}-form-submit`}
           loading={submitting}

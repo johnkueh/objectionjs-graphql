@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useMutation } from 'react-apollo-hooks';
-import { actions } from './reducer';
 import Button from '../button';
 import AlertMessages from '../alert-messages';
 import { useForm } from '../../hooks/use-form';
 
-const Create = ({ modelName, fields, dispatch, collectionQuery, createMutation }) => {
+const Create = ({ modelName, fields, onCancel, onSuccess, collectionQuery, createMutation }) => {
   const initialValues = {};
   fields.forEach(({ name, type }) => {
     // TODO: Handle different types?
@@ -23,7 +22,7 @@ const Create = ({ modelName, fields, dispatch, collectionQuery, createMutation }
         refetchQueries: [{ query: collectionQuery }]
       });
       setSubmitting(false);
-      dispatch({ type: actions.HIDE_CREATE });
+      onSuccess();
     }
   });
 
@@ -50,7 +49,7 @@ const Create = ({ modelName, fields, dispatch, collectionQuery, createMutation }
         data-testid="cancel"
         onClick={e => {
           e.preventDefault();
-          dispatch({ type: actions.HIDE_CREATE });
+          onCancel();
         }}
         type="button"
       >
@@ -63,7 +62,8 @@ const Create = ({ modelName, fields, dispatch, collectionQuery, createMutation }
 Create.propTypes = {
   modelName: PropTypes.string.isRequired,
   fields: PropTypes.arrayOf(PropTypes.object).isRequired,
-  dispatch: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired,
   collectionQuery: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.object])
   ).isRequired,

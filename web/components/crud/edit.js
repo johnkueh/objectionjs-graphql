@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useQuery, useMutation } from 'react-apollo-hooks';
-import { actions } from './reducer';
 import Button from '../button';
 import AlertMessages from '../alert-messages';
 import { useForm } from '../../hooks/use-form';
@@ -28,10 +27,11 @@ const EditForm = ({
   resource,
   fields,
   modelName,
-  dispatch,
   collectionQuery,
   updateMutation,
-  deleteMutation
+  deleteMutation,
+  onCancel,
+  onSuccess
 }) => {
   const initialValues = {};
   fields.forEach(({ name, type }) => {
@@ -55,7 +55,7 @@ const EditForm = ({
       await performUpdate({
         variables: { input }
       });
-      dispatch({ type: actions.HIDE_EDIT });
+      onSuccess();
     }
   });
 
@@ -88,7 +88,7 @@ const EditForm = ({
             },
             refetchQueries: [{ query: collectionQuery }]
           });
-          dispatch({ type: actions.HIDE_EDIT });
+          onSuccess();
         }}
         type="button"
       >
@@ -98,7 +98,7 @@ const EditForm = ({
         data-testid="cancel"
         onClick={e => {
           e.preventDefault();
-          dispatch({ type: actions.HIDE_EDIT });
+          onCancel();
         }}
         type="button"
       >
@@ -112,7 +112,8 @@ EditForm.propTypes = {
   resource: PropTypes.objectOf(PropTypes.string).isRequired,
   fields: PropTypes.arrayOf(PropTypes.object).isRequired,
   modelName: PropTypes.string.isRequired,
-  dispatch: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired,
   collectionQuery: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.object])
   ).isRequired,

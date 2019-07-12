@@ -1,11 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
+import Router from 'next/router';
 import { withAuth } from '../lib/with-auth';
 import { useList } from '../hooks/use-list';
 import { useCrud } from '../hooks/use-crud';
 
-const Workspace = ({ router: { query } }) => {
-  const { Create, Edit, isCreating, isEditing, showCreate, showEdit } = useCrud({
+const Workspace = ({ router: { query, push } }) => {
+  const {
+    Create,
+    Edit,
+    isCreating,
+    isEditing,
+    showCreate,
+    hideCreate,
+    showEdit,
+    hideEdit
+  } = useCrud({
     modelName: 'workspace',
     resourceQuery: WORKSPACE,
     collectionQuery: WORKSPACES,
@@ -19,11 +30,20 @@ const Workspace = ({ router: { query } }) => {
     collectionQuery: WORKSPACES
   });
 
+  useEffect(() => {
+    if (query.new) {
+      showCreate();
+    } else if (query.edit) {
+      showEdit(query.id);
+    }
+  }, []);
+
   return (
     <>
       <h1>Workspaces</h1>
       <List
         onSelect={id => {
+          Router.push(`/workspaces?edit=true&id=${id}`, `/workspaces/${id}/edit`);
           showEdit(id);
         }}
       />
@@ -34,6 +54,7 @@ const Workspace = ({ router: { query } }) => {
           href="/workspaces/new"
           onClick={e => {
             e.preventDefault();
+            Router.push('/workspaces?new=true', '/workspaces/new');
             showCreate();
           }}
         >
@@ -41,10 +62,30 @@ const Workspace = ({ router: { query } }) => {
         </a>
       </div>
       {isCreating && (
-        <Create fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]} />
+        <Create
+          fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
+          onSuccess={() => {
+            Router.push('/workspaces');
+            hideCreate();
+          }}
+          onCancel={() => {
+            Router.push('/workspaces');
+            hideCreate();
+          }}
+        />
       )}
       {isEditing && (
-        <Edit fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]} />
+        <Edit
+          fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
+          onSuccess={() => {
+            Router.push('/workspaces');
+            hideCreate();
+          }}
+          onCancel={() => {
+            Router.push('/workspaces');
+            hideEdit();
+          }}
+        />
       )}
     </>
   );
@@ -93,5 +134,11 @@ export const DELETE_WORKSPACE = gql`
     }
   }
 `;
+
+Workspace.propTypes = {
+  router: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object])
+  ).isRequired
+};
 
 export default withAuth(Workspace);

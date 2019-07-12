@@ -9,6 +9,9 @@ describe('managing workspaces', function() {
     // Create
     cy.visit('/workspaces');
     cy.get('[data-testid=workspace-new-button]').click();
+    cy.url().should('include', '/new');
+    cy.reload();
+    cy.url().should('include', '/new');
     cy.get('[data-testid=workspace-create-form]').should('exist');
     cy.get('[data-testid=workspace-form-submit]').click();
     cy.get('[data-testid=alerts').should('contain', 'Name must be at least 1 character');
@@ -16,6 +19,7 @@ describe('managing workspaces', function() {
     cy.get('[data-testid=workspace-form-submit]').click();
 
     // Read
+    cy.url().should('not.include', '/new');
     cy.get('[data-testid=workspace-list]').should('contain', 'A test workspace');
 
     // Update
@@ -24,11 +28,15 @@ describe('managing workspaces', function() {
       .click();
     cy.get('[data-testid=workspace-create-form]').should('not.exist');
     cy.get('[data-testid=workspace-edit-form]').should('not.exist');
+    cy.url().should('include', '/edit');
+    cy.reload();
+    cy.url().should('include', '/edit');
     cy.get('input[name=name]').clear();
     cy.get('[data-testid=workspace-form-submit]').click();
     cy.get('[data-testid=alerts').should('contain', 'Name must be at least 1 character');
     cy.get('input[name=name]').type('Updated workspace');
     cy.get('[data-testid=workspace-form-submit]').click();
+    cy.url().should('not.include', '/edit');
     cy.get('[data-testid=workspace-list]').should('contain', 'Updated workspace');
 
     // Destroy

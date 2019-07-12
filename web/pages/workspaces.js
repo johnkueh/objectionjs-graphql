@@ -1,202 +1,96 @@
-import React, { useReducer } from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
-import { useQuery, useMutation } from 'react-apollo-hooks';
-import PageLoading from '../components/page-loading';
+import Router from 'next/router';
 import { withAuth } from '../lib/with-auth';
-import { useForm } from '../hooks/use-form';
-import Button from '../components/button';
-import AlertMessages from '../components/alert-messages';
+import { useList } from '../hooks/use-list';
+import { useCrud } from '../hooks/use-crud';
 
-const Workspace = ({ router: { query } }) => {
-  const [{ showCreate, showEdit, id }, dispatch] = useReducer(routeReducer, routeInitialState);
+const Workspace = ({ router: { query, push } }) => {
   const {
-    loading,
-    data: { workspaces }
-  } = useQuery(WORKSPACES);
+    Create,
+    Edit,
+    isCreating,
+    isEditing,
+    showCreate,
+    hideCreate,
+    showEdit,
+    hideEdit
+  } = useCrud({
+    modelName: 'workspace',
+    resourceQuery: WORKSPACE,
+    collectionQuery: WORKSPACES,
+    createMutation: CREATE_WORKSPACE,
+    updateMutation: UPDATE_WORKSPACE,
+    deleteMutation: DELETE_WORKSPACE
+  });
 
-  if (loading) return <PageLoading />;
+  const { List } = useList({
+    modelName: 'workspace',
+    collectionQuery: WORKSPACES
+  });
+
+  useEffect(() => {
+    if (query.new) {
+      showCreate();
+    } else if (query.edit) {
+      showEdit(query.id);
+    }
+  }, []);
+
+  const goToList = () => {
+    Router.push('/workspaces', '/workspaces', {
+      shallow: true
+    });
+    hideEdit();
+    hideCreate();
+  };
 
   return (
     <>
       <h1>Workspaces</h1>
-      <div>
-        {workspaces.map(({ id, name }) => (
-          <div key={id}>
-            <a
-              onClick={e => {
-                e.preventDefault();
-                dispatch({ type: SHOW_EDIT, id });
-              }}
-              href={`/workspaces/${id}/edit`}
-            >
-              {name}
-            </a>
-          </div>
-        ))}
-      </div>
-      <hr />
-      <div>
-        <a
-          href="/workspaces/new"
-          onClick={e => {
-            e.preventDefault();
-            dispatch({ type: SHOW_CREATE });
-          }}
-        >
-          Add new
-        </a>
-      </div>
-      {showCreate && <Create dispatch={dispatch} />}
-      {showEdit && <Edit dispatch={dispatch} id={id} />}
-    </>
-  );
-};
-
-const Create = ({ dispatch }) => {
-  const createWorkspace = useMutation(CREATE_WORKSPACE);
-  const { formProps, fieldProps, errors, submitting } = useForm({
-    initialValues: {
-      name: ''
-    },
-    onSubmit: async ({ currentValues, setSubmitting }) => {
-      await createWorkspace({
-        variables: {
-          input: currentValues
-        },
-        refetchQueries: [{ query: WORKSPACES }]
-      });
-      dispatch({ type: HIDE_CREATE });
-    }
-  });
-
-  return (
-    <>
-      <AlertMessages messages={{ warning: errors }} />
-      <form {...formProps()}>
-        <label>Name</label>
-        <input {...fieldProps('name')} type="name" placeholder="Name" />
-        <Button loading={submitting} loadingText="Submitting..." type="submit">
-          Save
-        </Button>
-      </form>
-      <button
-        onClick={e => {
-          e.preventDefault();
-          dispatch({ type: HIDE_CREATE });
-        }}
-        type="button"
-      >
-        Cancel
-      </button>
-    </>
-  );
-};
-
-const Edit = ({ id, dispatch }) => {
-  const {
-    loading,
-    data: { workspace }
-  } = useQuery(WORKSPACE, { variables: { input: { id } } });
-
-  if (!workspace) return null;
-
-  return <EditForm key={workspace.id} workspace={workspace} dispatch={dispatch} />;
-};
-
-const EditForm = ({ workspace, dispatch }) => {
-  const updateWorkspace = useMutation(UPDATE_WORKSPACE);
-  const deleteWorkspace = useMutation(DELETE_WORKSPACE);
-  const { formProps, fieldProps, errors, submitting } = useForm({
-    initialValues: { name: workspace.name },
-    onSubmit: async ({ currentValues: { name }, setSubmitting }) => {
-      await updateWorkspace({
-        variables: { input: { id: workspace.id, name } }
-      });
-      setSubmitting(false);
-      dispatch({ type: HIDE_EDIT });
-    }
-  });
-
-  return (
-    <>
-      <AlertMessages messages={{ warning: errors }} />
-      <form {...formProps()}>
-        <label>Name</label>
-        <input {...fieldProps('name')} type="name" placeholder="Name" />
-        <Button loading={submitting} loadingText="Submitting..." type="submit">
-          Save
-        </Button>
-      </form>
-      <button
-        onClick={async e => {
-          e.preventDefault();
-          await deleteWorkspace({
-            variables: {
-              input: { id: workspace.id }
-            },
-            refetchQueries: [{ query: WORKSPACES }]
+      <List
+        onSelect={id => {
+          Router.push(`/workspaces?edit=true&id=${id}`, `/workspaces/${id}/edit`, {
+            shallow: true
           });
-          dispatch({ type: HIDE_EDIT });
+          showEdit(id);
         }}
-        type="button"
-      >
-        Delete
-      </button>
-      <button
-        onClick={e => {
-          e.preventDefault();
-          dispatch({ type: HIDE_EDIT });
-        }}
-        type="button"
-      >
-        Cancel
-      </button>
+      />
+      <hr />
+      {isCreating && (
+        <Create
+          fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
+          onSuccess={goToList}
+          onCancel={goToList}
+        />
+      )}
+      {isEditing && (
+        <Edit
+          fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
+          onSuccess={goToList}
+          onCancel={goToList}
+        />
+      )}
+      {!isCreating && !isEditing && (
+        <div>
+          <a
+            data-testid="workspace-new-button"
+            href="/workspaces/new"
+            onClick={e => {
+              e.preventDefault();
+              Router.push('/workspaces?new=true', '/workspaces/new', {
+                shallow: true
+              });
+              showCreate();
+            }}
+          >
+            Add new
+          </a>
+        </div>
+      )}
     </>
   );
-};
-
-const SHOW_CREATE = 'SHOW_CREATE';
-const SHOW_EDIT = 'SHOW_EDIT';
-const HIDE_CREATE = 'HIDE_CREATE';
-const HIDE_EDIT = 'HIDE_EDIT';
-
-const routeReducer = (state, action) => {
-  switch (action.type) {
-    case SHOW_CREATE:
-      return {
-        ...state,
-        showCreate: true,
-        showEdit: false,
-        id: null
-      };
-    case HIDE_CREATE:
-      return {
-        ...state,
-        showCreate: false,
-        id: routeInitialState.id
-      };
-    case SHOW_EDIT:
-      return {
-        ...state,
-        showEdit: true,
-        showCreate: false,
-        id: action.id
-      };
-    case HIDE_EDIT:
-      return {
-        ...state,
-        showEdit: false,
-        id: routeInitialState.id
-      };
-    default:
-      return routeInitialState;
-  }
-};
-
-const routeInitialState = {
-  showCreate: false,
-  showEdit: false,
-  id: null
 };
 
 const WORKSPACES = gql`
@@ -242,5 +136,11 @@ export const DELETE_WORKSPACE = gql`
     }
   }
 `;
+
+Workspace.propTypes = {
+  router: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.func, PropTypes.object])
+  ).isRequired
+};
 
 export default withAuth(Workspace);

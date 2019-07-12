@@ -12,6 +12,20 @@
       "dest": "/api/src/index.js"
     },
     {
+      "src": "/workspaces/new",
+      "dest": "/web/workspaces?new=true",
+      "headers": {
+        "x-request-path": "$1"
+      }
+    },
+    {
+      "src": "/workspaces/(.*)/edit",
+      "dest": "/web/workspaces?edit=true&id=$1",
+      "headers": {
+        "x-request-path": "$1"
+      }
+    },
+    {
       "src": "/(.*)",
       "dest": "/web/$1",
       "headers": {

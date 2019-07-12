@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Alert from './alert';
 
 const AlertMessages = ({ messages }) => {
-  if (messages) {
+  if (Object.values(Object.values(messages)[0])[0]) {
     return (
       <div data-testid="alerts">
         {_.map(messages, (content, type) => (

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useMutation } from 'react-apollo-hooks';
 import { actions } from './reducer';
 import Button from '../button';
@@ -57,6 +58,18 @@ const Create = ({ modelName, fields, dispatch, collectionQuery, createMutation }
       </button>
     </>
   );
+};
+
+Create.propTypes = {
+  modelName: PropTypes.string.isRequired,
+  fields: PropTypes.arrayOf(PropTypes.object).isRequired,
+  dispatch: PropTypes.func.isRequired,
+  collectionQuery: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.object])
+  ).isRequired,
+  createMutation: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.object])
+  ).isRequired
 };
 
 export default Create;

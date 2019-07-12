@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useQuery, useMutation } from 'react-apollo-hooks';
 import { actions } from './reducer';
 import Button from '../button';
@@ -13,6 +14,14 @@ const Edit = props => {
   if (!resource) return null;
 
   return <EditForm {...editProps} key={resource.id} modelName={modelName} resource={resource} />;
+};
+
+Edit.propTypes = {
+  id: PropTypes.string.isRequired,
+  modelName: PropTypes.string.isRequired,
+  resourceQuery: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.object])
+  ).isRequired
 };
 
 const EditForm = ({
@@ -97,6 +106,22 @@ const EditForm = ({
       </button>
     </>
   );
+};
+
+EditForm.propTypes = {
+  resource: PropTypes.objectOf(PropTypes.string).isRequired,
+  fields: PropTypes.arrayOf(PropTypes.object).isRequired,
+  modelName: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  collectionQuery: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.object])
+  ).isRequired,
+  updateMutation: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.object])
+  ).isRequired,
+  deleteMutation: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.object])
+  ).isRequired
 };
 
 export default Edit;

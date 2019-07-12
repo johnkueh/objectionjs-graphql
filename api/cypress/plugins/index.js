@@ -29,10 +29,17 @@ module.exports = (on, config) => {
         .where('email', email);
     },
 
-    factoryCreate(params) {
-      const type = Object.keys(params)[0];
-      const overrides = Object.values(params)[0];
-      return factory.create(type, overrides);
+    factory({ method, type, args, include }) {
+      return new Promise(async res => {
+        const created = await factory[method](type, args);
+        const result = created.toJSON();
+        if (include) {
+          include.map(key => {
+            result[key] = created[key];
+          });
+        }
+        res(result);
+      });
     }
   });
 };

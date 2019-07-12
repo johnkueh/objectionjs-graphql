@@ -50,6 +50,7 @@ export const useForm = ({ initialValues, onSubmit }) => {
     }),
     fieldProps: name => {
       return {
+        name,
         value: state[name],
         onChange: ({ target: { value } }) => {
           dispatch({

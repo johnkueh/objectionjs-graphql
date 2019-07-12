@@ -7,10 +7,7 @@ class Workspace extends Model {
 
   static get validationSchema() {
     return this.yup.object().shape({
-      name: this.yup
-        .string()
-        .min(1)
-        .max(15)
+      name: this.yup.string().min(1)
     });
   }
 

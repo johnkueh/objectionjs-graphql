@@ -19,10 +19,11 @@ const Workspace = ({ router: { query } }) => {
   return (
     <>
       <h1>Workspaces</h1>
-      <div>
+      <div data-testid="workspaces">
         {workspaces.map(({ id, name }) => (
           <div key={id}>
             <a
+              data-testid="workspace-link"
               onClick={e => {
                 e.preventDefault();
                 dispatch({ type: SHOW_EDIT, id });
@@ -37,6 +38,7 @@ const Workspace = ({ router: { query } }) => {
       <hr />
       <div>
         <a
+          data-testid="workspace-new-button"
           href="/workspaces/new"
           onClick={e => {
             e.preventDefault();
@@ -72,14 +74,20 @@ const Create = ({ dispatch }) => {
   return (
     <>
       <AlertMessages messages={{ warning: errors }} />
-      <form {...formProps()}>
+      <form data-testid="workspace-create-form" {...formProps()}>
         <label>Name</label>
-        <input {...fieldProps('name')} type="name" placeholder="Name" />
-        <Button loading={submitting} loadingText="Submitting..." type="submit">
+        <input {...fieldProps('name')} type="text" placeholder="Name" />
+        <Button
+          data-testid="workspace-form-submit"
+          loading={submitting}
+          loadingText="Submitting..."
+          type="submit"
+        >
           Save
         </Button>
       </form>
       <button
+        data-testid="cancel"
         onClick={e => {
           e.preventDefault();
           dispatch({ type: HIDE_CREATE });
@@ -122,12 +130,18 @@ const EditForm = ({ workspace, dispatch }) => {
       <AlertMessages messages={{ warning: errors }} />
       <form {...formProps()}>
         <label>Name</label>
-        <input {...fieldProps('name')} type="name" placeholder="Name" />
-        <Button loading={submitting} loadingText="Submitting..." type="submit">
+        <input {...fieldProps('name')} type="text" placeholder="Name" />
+        <Button
+          data-testid="workspace-form-submit"
+          loading={submitting}
+          loadingText="Submitting..."
+          type="submit"
+        >
           Save
         </Button>
       </form>
       <button
+        data-testid="workspace-delete"
         onClick={async e => {
           e.preventDefault();
           await deleteWorkspace({
@@ -143,6 +157,7 @@ const EditForm = ({ workspace, dispatch }) => {
         Delete
       </button>
       <button
+        data-testid="cancel"
         onClick={e => {
           e.preventDefault();
           dispatch({ type: HIDE_EDIT });

@@ -1,8 +1,7 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { useQuery } from 'react-apollo-hooks';
-import PageLoading from '../components/page-loading';
 import { withAuth } from '../lib/with-auth';
+import { useList } from '../hooks/use-list';
 import { useCrud } from '../hooks/use-crud';
 
 const Workspace = ({ router: { query } }) => {
@@ -15,32 +14,19 @@ const Workspace = ({ router: { query } }) => {
     deleteMutation: DELETE_WORKSPACE
   });
 
-  const {
-    loading,
-    data: { workspaces }
-  } = useQuery(WORKSPACES);
-
-  if (loading) return <PageLoading />;
+  const { List } = useList({
+    modelName: 'workspace',
+    collectionQuery: WORKSPACES
+  });
 
   return (
     <>
       <h1>Workspaces</h1>
-      <div data-testid="workspaces">
-        {workspaces.map(({ id, name }) => (
-          <div key={id}>
-            <a
-              data-testid="workspace-link"
-              onClick={e => {
-                e.preventDefault();
-                showEdit(id);
-              }}
-              href={`/workspaces/${id}/edit`}
-            >
-              {name}
-            </a>
-          </div>
-        ))}
-      </div>
+      <List
+        onSelect={id => {
+          showEdit(id);
+        }}
+      />
       <hr />
       <div>
         <a

@@ -6,6 +6,7 @@ import NProgress from 'nprogress';
 import { ApolloProvider } from 'react-apollo-hooks';
 import withApolloClient from '../lib/with-apollo-client';
 import 'nprogress/nprogress.css';
+import '../styles/index.scss';
 
 Router.events.on('routeChangeStart', url => {
   NProgress.start();

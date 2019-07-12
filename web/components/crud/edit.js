@@ -46,7 +46,6 @@ const EditForm = ({
       await performUpdate({
         variables: { input }
       });
-      setSubmitting(false);
       dispatch({ type: actions.HIDE_EDIT });
     }
   });

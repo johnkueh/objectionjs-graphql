@@ -3,27 +3,27 @@ export const reducer = (state, action) => {
     case actions.SHOW_CREATE:
       return {
         ...state,
-        showCreate: true,
-        showEdit: false,
+        isCreating: true,
+        isEditing: false,
         id: null
       };
     case actions.HIDE_CREATE:
       return {
         ...state,
-        showCreate: false,
+        isCreating: false,
         id: initialState.id
       };
     case actions.SHOW_EDIT:
       return {
         ...state,
-        showEdit: true,
-        showCreate: false,
+        isEditing: true,
+        isCreating: false,
         id: action.id
       };
     case actions.HIDE_EDIT:
       return {
         ...state,
-        showEdit: false,
+        isEditing: false,
         id: initialState.id
       };
     default:
@@ -32,8 +32,8 @@ export const reducer = (state, action) => {
 };
 
 export const initialState = {
-  showCreate: false,
-  showEdit: false,
+  isCreating: false,
+  isEditing: false,
   id: null
 };
 

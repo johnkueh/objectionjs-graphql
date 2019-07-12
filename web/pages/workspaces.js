@@ -1,13 +1,20 @@
-import React, { useReducer } from 'react';
+import React from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from 'react-apollo-hooks';
 import PageLoading from '../components/page-loading';
 import { withAuth } from '../lib/with-auth';
-import { Create, Edit } from '../components/crud';
-import { actions, reducer, initialState } from '../components/crud/reducer';
+import { useCrud } from '../hooks/use-crud';
 
 const Workspace = ({ router: { query } }) => {
-  const [{ showCreate, showEdit, id }, dispatch] = useReducer(reducer, initialState);
+  const { Create, Edit, isCreating, isEditing, showCreate, showEdit } = useCrud({
+    modelName: 'workspace',
+    resourceQuery: WORKSPACE,
+    collectionQuery: WORKSPACES,
+    createMutation: CREATE_WORKSPACE,
+    updateMutation: UPDATE_WORKSPACE,
+    deleteMutation: DELETE_WORKSPACE
+  });
+
   const {
     loading,
     data: { workspaces }
@@ -25,7 +32,7 @@ const Workspace = ({ router: { query } }) => {
               data-testid="workspace-link"
               onClick={e => {
                 e.preventDefault();
-                dispatch({ type: actions.SHOW_EDIT, id });
+                showEdit(id);
               }}
               href={`/workspaces/${id}/edit`}
             >
@@ -41,33 +48,14 @@ const Workspace = ({ router: { query } }) => {
           href="/workspaces/new"
           onClick={e => {
             e.preventDefault();
-            dispatch({ type: actions.SHOW_CREATE });
+            showCreate();
           }}
         >
           Add new
         </a>
       </div>
-      {showCreate && (
-        <Create
-          modelName="workspace"
-          collectionQuery={WORKSPACES}
-          createMutation={CREATE_WORKSPACE}
-          dispatch={dispatch}
-          fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
-        />
-      )}
-      {showEdit && (
-        <Edit
-          modelName="workspace"
-          id={id}
-          resourceQuery={WORKSPACE}
-          collectionQuery={WORKSPACES}
-          updateMutation={UPDATE_WORKSPACE}
-          deleteMutation={DELETE_WORKSPACE}
-          dispatch={dispatch}
-          fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
-        />
-      )}
+      {isCreating && <Create />}
+      {isEditing && <Edit />}
     </>
   );
 };

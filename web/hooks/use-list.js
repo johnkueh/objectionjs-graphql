@@ -15,6 +15,7 @@ export const useList = ({ modelName, collectionQuery }) => {
           <div key={id}>
             <a
               data-testid={`${modelName}-link`}
+              className="text-gray-800 font-medium rounded w-64 mb-3 bg-white block shadow-lg px-6 py-4"
               onClick={e => {
                 e.preventDefault();
                 onSelect(id);

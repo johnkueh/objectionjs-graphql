@@ -61,49 +61,58 @@ const EditForm = ({
 
   return (
     <>
-      <AlertMessages messages={{ warning: errors }} />
-      <form {...formProps()}>
+      <form className="mt-8 max-w-xs bg-white shadow-md rounded p-6" {...formProps()}>
+        <AlertMessages messages={{ warning: errors }} />
         {fields.map(({ name, label, ...props }) => (
-          <div key={name}>
-            <label>{label}</label>
-            <input {...fieldProps(name)} {...props} />
+          <div className="mb-4" key={name}>
+            <label className="block text-gray-700 text-sm font-bold mb-2">{label}</label>
+            <input
+              {...fieldProps(name)}
+              {...props}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
           </div>
         ))}
-        <Button
-          data-testid={`${modelName}-form-submit`}
-          loading={submitting}
-          loadingText="Submitting..."
-          type="submit"
-        >
-          Save
-        </Button>
+        <div className="mt-8 flex w-full justify-between">
+          <Button
+            data-testid={`${modelName}-form-submit`}
+            loading={submitting}
+            loadingText="Submitting..."
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Save
+          </Button>
+          <button
+            data-testid={`${modelName}-delete`}
+            className="bg-red-200 hover:bg-red-300 text-red-600 font-bold py-2 px-4 rounded"
+            onClick={async e => {
+              e.preventDefault();
+              await performDelete({
+                variables: {
+                  input: { id: resource.id }
+                },
+                refetchQueries: [{ query: collectionQuery }]
+              });
+              onSuccess();
+            }}
+            type="button"
+          >
+            Delete
+          </button>
+          <button
+            data-testid="cancel"
+            className="bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded"
+            onClick={e => {
+              e.preventDefault();
+              onCancel();
+            }}
+            type="button"
+          >
+            Cancel
+          </button>
+        </div>
       </form>
-      <button
-        data-testid={`${modelName}-delete`}
-        onClick={async e => {
-          e.preventDefault();
-          await performDelete({
-            variables: {
-              input: { id: resource.id }
-            },
-            refetchQueries: [{ query: collectionQuery }]
-          });
-          onSuccess();
-        }}
-        type="button"
-      >
-        Delete
-      </button>
-      <button
-        data-testid="cancel"
-        onClick={e => {
-          e.preventDefault();
-          onCancel();
-        }}
-        type="button"
-      >
-        Cancel
-      </button>
     </>
   );
 };

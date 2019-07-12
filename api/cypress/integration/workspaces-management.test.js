@@ -4,13 +4,6 @@ describe('managing workspaces', function() {
     cy.createUserAndLogin({
       email: 'john@doe.com'
     }).as('user');
-    cy.factory({
-      method: 'create',
-      type: 'workspace',
-      args: {
-        name: 'Test other workspace'
-      }
-    }).as('otherWorkspace');
   });
   it('can perform CRUD on workspaces', function() {
     // Create

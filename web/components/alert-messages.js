@@ -4,17 +4,13 @@ import PropTypes from 'prop-types';
 import Alert from './alert';
 
 const AlertMessages = ({ messages }) => {
-  if (Object.values(Object.values(messages)[0])[0]) {
-    return (
-      <div data-testid="alerts">
-        {_.map(messages, (content, type) => (
-          <Alert key={type} type={type} messages={content} />
-        ))}
-      </div>
-    );
-  }
-
-  return <></>;
+  return (
+    <div data-testid="alerts">
+      {_.map(messages, (content, type) => (
+        <Alert key={type} type={type} messages={content} />
+      ))}
+    </div>
+  );
 };
 
 export default AlertMessages;

@@ -1,30 +1,32 @@
 import React from 'react';
 import Router from 'next/router';
 import { withAuth } from '../lib/with-auth';
-import NavLink from '../components/nav-link';
+import Nav from '../components/nav';
 
 const Start = ({ user, apolloClient, logout }) => {
   return (
-    <>
-      <h1>Welcome!</h1>
-      <p>
-        Logged in as:
-        {user.email}
-      </p>
-      <div>
-        <NavLink href="/profile">Profile</NavLink>
-        <NavLink href="/workspaces">Workspaces</NavLink>
+    <div className="bg-gray-200 w-screen h-screen">
+      <div className="container mx-auto">
+        <Nav />
+        <h1 className="font-medium text-3xl">Dashboard</h1>
+        <div className="mt-8">
+          <p>
+            Logged in as:
+            {user.email}
+          </p>
+          <button
+            className="text-gray-500 hover:text-gray-700"
+            type="button"
+            onClick={async () => {
+              await logout(apolloClient);
+              Router.replace('/login');
+            }}
+          >
+            Logout
+          </button>
+        </div>
       </div>
-      <button
-        type="button"
-        onClick={async () => {
-          await logout(apolloClient);
-          Router.replace('/login');
-        }}
-      >
-        Logout
-      </button>
-    </>
+    </div>
   );
 };
 

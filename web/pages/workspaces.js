@@ -48,19 +48,6 @@ const Workspace = ({ router: { query, push } }) => {
         }}
       />
       <hr />
-      <div>
-        <a
-          data-testid="workspace-new-button"
-          href="/workspaces/new"
-          onClick={e => {
-            e.preventDefault();
-            Router.push('/workspaces?new=true', '/workspaces/new');
-            showCreate();
-          }}
-        >
-          Add new
-        </a>
-      </div>
       {isCreating && (
         <Create
           fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
@@ -86,6 +73,21 @@ const Workspace = ({ router: { query, push } }) => {
             hideEdit();
           }}
         />
+      )}
+      {!isCreating && !isEditing && (
+        <div>
+          <a
+            data-testid="workspace-new-button"
+            href="/workspaces/new"
+            onClick={e => {
+              e.preventDefault();
+              Router.push('/workspaces?new=true', '/workspaces/new');
+              showCreate();
+            }}
+          >
+            Add new
+          </a>
+        </div>
       )}
     </>
   );

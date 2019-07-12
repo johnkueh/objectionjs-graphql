@@ -12,6 +12,7 @@ describe('managing workspaces', function() {
     cy.url().should('include', '/new');
     cy.reload();
     cy.url().should('include', '/new');
+    cy.get('[data-testid=workspace-new-button]').should('not.exist');
     cy.get('[data-testid=workspace-create-form]').should('exist');
     cy.get('[data-testid=workspace-form-submit]').click();
     cy.get('[data-testid=alerts').should('contain', 'Name must be at least 1 character');
@@ -31,6 +32,7 @@ describe('managing workspaces', function() {
     cy.url().should('include', '/edit');
     cy.reload();
     cy.url().should('include', '/edit');
+    cy.get('[data-testid=workspace-new-button]').should('not.exist');
     cy.get('input[name=name]').clear();
     cy.get('[data-testid=workspace-form-submit]').click();
     cy.get('[data-testid=alerts').should('contain', 'Name must be at least 1 character');

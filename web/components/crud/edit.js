@@ -62,6 +62,10 @@ const EditForm = ({
   return (
     <>
       <form className="mt-8 max-w-xs bg-white shadow-md rounded p-6" {...formProps()}>
+        <h3 className="text-lg font-medium mb-5">
+          Edit&nbsp;
+          {modelName}
+        </h3>
         <AlertMessages messages={{ warning: errors }} />
         {fields.map(({ name, label, ...props }) => (
           <div className="mb-4" key={name}>

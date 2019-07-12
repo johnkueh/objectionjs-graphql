@@ -33,6 +33,10 @@ const Create = ({ modelName, fields, onCancel, onSuccess, collectionQuery, creat
         data-testid={`${modelName}-create-form`}
         {...formProps()}
       >
+        <h3 className="text-lg font-medium mb-5">
+          Add a new&nbsp;
+          {modelName}
+        </h3>
         <AlertMessages messages={{ warning: errors }} />
         {fields.map(({ name, label, ...props }) => (
           <div className="mb-4" key={name}>

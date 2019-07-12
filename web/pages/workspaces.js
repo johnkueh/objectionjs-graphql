@@ -38,12 +38,22 @@ const Workspace = ({ router: { query, push } }) => {
     }
   }, []);
 
+  const goToList = () => {
+    Router.push('/workspaces', '/workspaces', {
+      shallow: true
+    });
+    hideEdit();
+    hideCreate();
+  };
+
   return (
     <>
       <h1>Workspaces</h1>
       <List
         onSelect={id => {
-          Router.push(`/workspaces?edit=true&id=${id}`, `/workspaces/${id}/edit`);
+          Router.push(`/workspaces?edit=true&id=${id}`, `/workspaces/${id}/edit`, {
+            shallow: true
+          });
           showEdit(id);
         }}
       />
@@ -51,27 +61,15 @@ const Workspace = ({ router: { query, push } }) => {
       {isCreating && (
         <Create
           fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
-          onSuccess={() => {
-            Router.push('/workspaces');
-            hideCreate();
-          }}
-          onCancel={() => {
-            Router.push('/workspaces');
-            hideCreate();
-          }}
+          onSuccess={goToList}
+          onCancel={goToList}
         />
       )}
       {isEditing && (
         <Edit
           fields={[{ label: 'Name', name: 'name', type: 'text', placeholder: 'Name' }]}
-          onSuccess={() => {
-            Router.push('/workspaces');
-            hideCreate();
-          }}
-          onCancel={() => {
-            Router.push('/workspaces');
-            hideEdit();
-          }}
+          onSuccess={goToList}
+          onCancel={goToList}
         />
       )}
       {!isCreating && !isEditing && (
@@ -81,7 +79,9 @@ const Workspace = ({ router: { query, push } }) => {
             href="/workspaces/new"
             onClick={e => {
               e.preventDefault();
-              Router.push('/workspaces?new=true', '/workspaces/new');
+              Router.push('/workspaces?new=true', '/workspaces/new', {
+                shallow: true
+              });
               showCreate();
             }}
           >

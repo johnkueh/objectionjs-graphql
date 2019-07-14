@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "next": "next"
+  },
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-sass": "^1.0.1",
@@ -8,7 +11,9 @@
     "apollo-link-context": "^1.0.17",
     "apollo-link-http": "^1.5.14",
     "autoprefixer": "^9.6.1",
+    "axios": "^0.19.0",
     "classnames": "^2.2.6",
+    "cloudinary-react": "^1.1.1",
     "cookie": "^0.4.0",
     "graphql": "^14.2.1",
     "graphql-tag": "^2.10.1",
@@ -23,6 +28,7 @@
     "react-apollo": "^2.5.3",
     "react-apollo-hooks": "^0.4.5",
     "react-dom": "^16.8.6",
+    "react-svg": "^10.0.11",
     "tailwindcss": "^1.0.5"
   }
 }

@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import gql from 'graphql-tag';
 import { useMutation } from 'react-apollo-hooks';
 import { useForm } from '../hooks/use-form';
+import { useUpload } from '../hooks/use-upload';
 import { withAuth } from '../lib/with-auth';
 import Nav from '../components/nav';
 import Button from '../components/button';
 import AlertMessages from '../components/alert-messages';
 
 const Profile = ({ user: { email, name } }) => {
+  const Uploader = useUpload();
   const [success, setSuccess] = useState(null);
   const updateUser = useMutation(UPDATE_USER);
   const { formProps, fieldProps, errors, submitting } = useForm({
@@ -32,7 +34,7 @@ const Profile = ({ user: { email, name } }) => {
       <div className="container mx-auto">
         <Nav />
         <h1 className="font-medium text-3xl">Profile</h1>
-        <form className="mt-8 max-w-xs bg-white shadow-md rounded p-8" {...formProps()}>
+        <form className="mt-8 max-w-xs bg-white shadow-md rounded p-6" {...formProps()}>
           <AlertMessages
             messages={{
               warning: errors,
@@ -48,7 +50,7 @@ const Profile = ({ user: { email, name } }) => {
               placeholder="John Doe"
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
             <input
               {...fieldProps('email')}
@@ -57,9 +59,16 @@ const Profile = ({ user: { email, name } }) => {
               placeholder="john@doe.com"
             />
           </div>
+          <div className="mb-6">
+            <Uploader
+              title="logo"
+              onUploaded={data => {
+                console.log('onuploaded', data);
+              }}
+            />
+          </div>
           <Button
             loading={submitting}
-            loadingText="Submitting..."
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="submit"
           >

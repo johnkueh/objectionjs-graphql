@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Button = ({ loading, loadingText, children, ...props }) => {
-  const loadingLabel = loadingText || children;
+const Button = ({ loading, className, children, ...props }) => {
+  const disabledClass = loading ? `${className} opacity-50 cursor-not-allowed` : className;
 
   return (
-    <button type="submit" disabled={loading} {...props}>
-      {loading ? loadingLabel : children}
+    <button className={disabledClass} type="submit" disabled={loading} {...props}>
+      {loading ? <img alt="spinner" width="25" src="/static/tail-spin.svg" /> : children}
     </button>
   );
 };
@@ -15,11 +15,11 @@ export default Button;
 
 Button.propTypes = {
   loading: PropTypes.bool,
-  loadingText: PropTypes.string,
+  className: PropTypes.string,
   children: PropTypes.node.isRequired
 };
 
 Button.defaultProps = {
   loading: false,
-  loadingText: null
+  className: ''
 };

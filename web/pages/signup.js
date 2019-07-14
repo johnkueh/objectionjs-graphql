@@ -33,7 +33,7 @@ const Signup = () => {
   return (
     <div className="bg-gray-200 w-screen h-screen flex items-center justify-center">
       <div className="w-full max-w-xs">
-        <form className="bg-white shadow-md rounded p-10" {...formProps()}>
+        <form className="bg-white shadow-md rounded p-8" {...formProps()}>
           <h1 className="mb-5 font-bold text-xl">GraphQL Example</h1>
           <AlertMessages messages={{ warning: errors }} />
           <div className="mb-4">
@@ -70,7 +70,6 @@ const Signup = () => {
             data-testid="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             loading={submitting}
-            loadingText="Submitting..."
             type="submit"
           >
             Sign up

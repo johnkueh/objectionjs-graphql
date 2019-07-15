@@ -9,7 +9,6 @@ import Button from '../components/button';
 import AlertMessages from '../components/alert-messages';
 
 const Profile = ({ user: { email, name } }) => {
-  const Uploader = useUpload();
   const [success, setSuccess] = useState(null);
   const updateUser = useMutation(UPDATE_USER);
   const { formProps, fieldProps, errors, submitting } = useForm({
@@ -28,6 +27,8 @@ const Profile = ({ user: { email, name } }) => {
       setSubmitting(false);
     }
   });
+  const [logos, setLogos] = useState([]);
+  const Uploader = useUpload();
 
   return (
     <div className="bg-gray-200 w-screen h-screen">
@@ -60,10 +61,14 @@ const Profile = ({ user: { email, name } }) => {
             />
           </div>
           <div className="mb-6">
+            {logos.map(({ public_id }) => (
+              <div>Logo - {public_id}</div>
+            ))}
             <Uploader
               title="logo"
               onUploaded={data => {
-                console.log('onuploaded', data);
+                logos.push(data);
+                setLogos(logos);
               }}
             />
           </div>

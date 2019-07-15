@@ -2,7 +2,7 @@ import React, { useReducer } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
-export const useUpload = () => {
+export const useUpload = ({ multiple = false, accept = 'image/*' } = {}) => {
   const [state, dispatch] = useReducer(reducer, {});
   const Uploader = ({ onUploaded }) => {
     return (
@@ -11,8 +11,8 @@ export const useUpload = () => {
           Upload logo
         </button>
         <input
-          multiple
-          accept="image/*"
+          multiple={multiple}
+          accept={accept}
           className="cursor-pointer absolute w-full opacity-0 bg-red-300 inset-0"
           type="file"
           onChange={async e => {

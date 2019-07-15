@@ -27,7 +27,7 @@ const Profile = ({ user: { email, name } }) => {
       setSubmitting(false);
     }
   });
-  const [logos, setLogos] = useState([]);
+  const [logo, setLogo] = useState(null);
   const Uploader = useUpload();
 
   return (
@@ -61,14 +61,11 @@ const Profile = ({ user: { email, name } }) => {
             />
           </div>
           <div className="mb-6">
-            {logos.map(({ public_id }) => (
-              <div>Logo - {public_id}</div>
-            ))}
+            {logo && <img className="w-full rounded object-cover" src={logo.secure_url} />}
             <Uploader
               title="logo"
               onUploaded={data => {
-                logos.push(data);
-                setLogos(logos);
+                setLogo(data);
               }}
             />
           </div>

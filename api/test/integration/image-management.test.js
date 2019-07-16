@@ -24,6 +24,24 @@ describe('Upserting images', () => {
     });
   });
 
+  it('is not able to upsert image without auth', async () => {
+    const res = await request({
+      handler,
+      apiPath: path,
+      query,
+      variables: {
+        input: {
+          publicId: 'public-id',
+          caption: 'A test caption'
+        }
+      }
+    });
+
+    expect(res.errors[0].extensions.exception.errors).toEqual({
+      auth: 'You are not authorized to perform this action'
+    });
+  });
+
   it('is not able to create an image with missing fields', async () => {
     const res = await request({
       handler,
@@ -149,5 +167,39 @@ describe('Upserting images', () => {
     const userLogo = await user.$relatedQuery('logo');
     expect(userLogo.id).toEqual(image.id);
     expect(userLogo.publicId).toEqual('new-public-id');
+  });
+});
+
+describe('Deleting images', () => {
+  const query = `
+    mutation($input: DeleteImageInput!) {
+      deleteImage(input: $input) {
+        count
+      }
+    }
+  `;
+
+  beforeEach(async () => {
+    await factory.create('user', {
+      email: 'john@doe.com',
+      password: 'password'
+    });
+  });
+
+  it('is not able to delete image without auth', async () => {
+    const res = await request({
+      handler,
+      apiPath: path,
+      query,
+      variables: {
+        input: {
+          id: 'xxx-image-id'
+        }
+      }
+    });
+
+    expect(res.errors[0].extensions.exception.errors).toEqual({
+      auth: 'You are not authorized to perform this action'
+    });
   });
 });

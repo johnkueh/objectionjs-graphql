@@ -174,4 +174,61 @@ describe('Updating user profile', () => {
       password: 'Password must be at least 6 characters'
     });
   });
+
+  describe('Managing user logo', () => {
+    const deleteImageMutation = `
+      mutation($input: DeleteImageInput!) {
+        deleteImage(input: $input) {
+          count
+        }
+      }
+    `;
+    it('is not able to delete logo owned by other user', async () => {
+      const image = await factory.create('image', {
+        publicId: 'existing-public-id',
+        imageableType: 'UserLogo',
+        imageableId: 'other-user-id'
+      });
+
+      const res = await request({
+        handler,
+        apiPath: path,
+        cookies: [`jwt=${user.jwt}`],
+        query: deleteImageMutation,
+        variables: {
+          input: {
+            id: image.id
+          }
+        }
+      });
+
+      expect(res.errors[0].extensions.exception.errors).toEqual({
+        auth: 'You are not authorized to perform this action'
+      });
+    });
+
+    it('is able to delete logo owned by user', async () => {
+      const image = await factory.create('image', {
+        publicId: 'existing-public-id',
+        imageableType: 'UserLogo',
+        imageableId: user.id
+      });
+
+      const res = await request({
+        handler,
+        apiPath: path,
+        cookies: [`jwt=${user.jwt}`],
+        query: deleteImageMutation,
+        variables: {
+          input: {
+            id: image.id
+          }
+        }
+      });
+
+      expect(res.data.deleteImage).toEqual({
+        count: 1
+      });
+    });
+  });
 });

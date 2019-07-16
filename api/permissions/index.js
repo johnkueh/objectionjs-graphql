@@ -2,6 +2,7 @@ import { allow, and, shield } from 'graphql-shield';
 import ValidationErrors from '../lib/validation-errors';
 import { isAuthenticated } from './is-authenticated';
 import { isWorkspaceOwner } from './is-workspace-owner';
+import { isLogoOwner } from './is-image-owner';
 
 export const permissions = shield(
   {
@@ -14,7 +15,8 @@ export const permissions = shield(
       login: allow,
       signup: allow,
       updateWorkspace: and(isAuthenticated, isWorkspaceOwner),
-      deleteWorkspace: and(isAuthenticated, isWorkspaceOwner)
+      deleteWorkspace: and(isAuthenticated, isWorkspaceOwner),
+      deleteImage: and(isAuthenticated, isLogoOwner)
     }
   },
   {

@@ -11,6 +11,10 @@ input CreateWorkspaceInput {
   name: String!
 }
 
+input DeleteImageInput {
+  id: String!
+}
+
 type DeletePayload {
   count: Int!
 }
@@ -37,6 +41,7 @@ input LoginInput {
 
 type Mutation {
   createWorkspace(input: CreateWorkspaceInput!): Workspace!
+  deleteImage(input: DeleteImageInput!): DeletePayload!
   deleteWorkspace(input: DeleteWorkspaceInput!): DeleteWorkspacePayload!
   login(input: LoginInput!): AuthPayload!
   signup(input: SignupInput!): AuthPayload!

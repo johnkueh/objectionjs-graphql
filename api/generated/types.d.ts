@@ -16,6 +16,9 @@ export interface NexusGenInputs {
   CreateWorkspaceInput: { // input type
     name: string; // String!
   }
+  DeleteImageInput: { // input type
+    id: string; // String!
+  }
   DeleteWorkspaceInput: { // input type
     id: string; // String!
   }
@@ -91,6 +94,7 @@ export interface NexusGenRootTypes {
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
   CreateWorkspaceInput: NexusGenInputs['CreateWorkspaceInput'];
+  DeleteImageInput: NexusGenInputs['DeleteImageInput'];
   DeleteWorkspaceInput: NexusGenInputs['DeleteWorkspaceInput'];
   LoginInput: NexusGenInputs['LoginInput'];
   SignupInput: NexusGenInputs['SignupInput'];
@@ -119,6 +123,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     createWorkspace: NexusGenRootTypes['Workspace']; // Workspace!
+    deleteImage: NexusGenRootTypes['DeletePayload']; // DeletePayload!
     deleteWorkspace: NexusGenRootTypes['DeleteWorkspacePayload']; // DeleteWorkspacePayload!
     login: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     signup: NexusGenRootTypes['AuthPayload']; // AuthPayload!
@@ -147,6 +152,9 @@ export interface NexusGenArgTypes {
   Mutation: {
     createWorkspace: { // args
       input: NexusGenInputs['CreateWorkspaceInput']; // CreateWorkspaceInput!
+    }
+    deleteImage: { // args
+      input: NexusGenInputs['DeleteImageInput']; // DeleteImageInput!
     }
     deleteWorkspace: { // args
       input: NexusGenInputs['DeleteWorkspaceInput']; // DeleteWorkspaceInput!
@@ -181,7 +189,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "AuthPayload" | "DeletePayload" | "DeleteWorkspacePayload" | "Image" | "Mutation" | "Query" | "User" | "Workspace";
 
-export type NexusGenInputNames = "CreateWorkspaceInput" | "DeleteWorkspaceInput" | "LoginInput" | "SignupInput" | "UpdateUserInput" | "UpdateWorkspaceInput" | "UpsertImageInput" | "WorkspaceInput";
+export type NexusGenInputNames = "CreateWorkspaceInput" | "DeleteImageInput" | "DeleteWorkspaceInput" | "LoginInput" | "SignupInput" | "UpdateUserInput" | "UpdateWorkspaceInput" | "UpsertImageInput" | "WorkspaceInput";
 
 export type NexusGenEnumNames = never;
 

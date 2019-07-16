@@ -36,3 +36,24 @@ export const UpsertImageMutation = mutationField('upsertImage', {
     return Image.query().upsertGraph(input);
   }
 });
+
+export const DeleteImageInputType = inputObjectType({
+  name: `DeleteImageInput`,
+  definition(t) {
+    t.string('id', { required: true });
+  }
+});
+
+export const DeleteImageMutation = mutationField(`deleteImage`, {
+  type: 'DeletePayload',
+  args: {
+    input: arg({
+      type: DeleteImageInputType,
+      required: true
+    })
+  },
+  resolve: async (parent, { input }) => {
+    const { id } = input;
+    return { count: await Image.query().deleteById(id) };
+  }
+});

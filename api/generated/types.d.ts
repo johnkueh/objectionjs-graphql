@@ -30,12 +30,21 @@ export interface NexusGenInputs {
   }
   UpdateUserInput: { // input type
     email?: string | null; // String
+    logo?: string | null; // String
     name?: string | null; // String
     password?: string | null; // String
   }
   UpdateWorkspaceInput: { // input type
     id: string; // String!
     name: string; // String!
+  }
+  UpsertImageInput: { // input type
+    caption?: string | null; // String
+    id?: string | null; // ID
+    imageableId?: string | null; // String
+    imageableType?: string | null; // String
+    position?: number | null; // Int
+    publicId?: string | null; // String
   }
   WorkspaceInput: { // input type
     id: string; // ID!
@@ -55,6 +64,12 @@ export interface NexusGenRootTypes {
   }
   DeleteWorkspacePayload: { // root type
     count: number; // Int!
+  }
+  Image: { // root type
+    caption?: string | null; // String
+    id: string; // ID!
+    position?: number | null; // Int
+    publicId: string; // String!
   }
   Mutation: {};
   Query: {};
@@ -81,6 +96,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   SignupInput: NexusGenInputs['SignupInput'];
   UpdateUserInput: NexusGenInputs['UpdateUserInput'];
   UpdateWorkspaceInput: NexusGenInputs['UpdateWorkspaceInput'];
+  UpsertImageInput: NexusGenInputs['UpsertImageInput'];
   WorkspaceInput: NexusGenInputs['WorkspaceInput'];
 }
 
@@ -95,6 +111,12 @@ export interface NexusGenFieldTypes {
   DeleteWorkspacePayload: { // field return type
     count: number; // Int!
   }
+  Image: { // field return type
+    caption: string | null; // String
+    id: string; // ID!
+    position: number | null; // Int
+    publicId: string; // String!
+  }
   Mutation: { // field return type
     createWorkspace: NexusGenRootTypes['Workspace']; // Workspace!
     deleteWorkspace: NexusGenRootTypes['DeleteWorkspacePayload']; // DeleteWorkspacePayload!
@@ -102,6 +124,7 @@ export interface NexusGenFieldTypes {
     signup: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     updateUser: NexusGenRootTypes['User']; // User!
     updateWorkspace: NexusGenRootTypes['Workspace']; // Workspace!
+    upsertImage: NexusGenRootTypes['Image']; // Image!
   }
   Query: { // field return type
     me: NexusGenRootTypes['User']; // User!
@@ -111,6 +134,7 @@ export interface NexusGenFieldTypes {
   User: { // field return type
     email: string; // String!
     id: string; // ID!
+    logo: NexusGenRootTypes['Image'] | null; // Image
     name: string; // String!
   }
   Workspace: { // field return type
@@ -139,6 +163,9 @@ export interface NexusGenArgTypes {
     updateWorkspace: { // args
       input: NexusGenInputs['UpdateWorkspaceInput']; // UpdateWorkspaceInput!
     }
+    upsertImage: { // args
+      input: NexusGenInputs['UpsertImageInput']; // UpsertImageInput!
+    }
   }
   Query: {
     workspace: { // args
@@ -152,9 +179,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "DeletePayload" | "DeleteWorkspacePayload" | "Mutation" | "Query" | "User" | "Workspace";
+export type NexusGenObjectNames = "AuthPayload" | "DeletePayload" | "DeleteWorkspacePayload" | "Image" | "Mutation" | "Query" | "User" | "Workspace";
 
-export type NexusGenInputNames = "CreateWorkspaceInput" | "DeleteWorkspaceInput" | "LoginInput" | "SignupInput" | "UpdateUserInput" | "UpdateWorkspaceInput" | "WorkspaceInput";
+export type NexusGenInputNames = "CreateWorkspaceInput" | "DeleteWorkspaceInput" | "LoginInput" | "SignupInput" | "UpdateUserInput" | "UpdateWorkspaceInput" | "UpsertImageInput" | "WorkspaceInput";
 
 export type NexusGenEnumNames = never;
 

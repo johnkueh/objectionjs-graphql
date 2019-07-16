@@ -14,6 +14,10 @@ describe('Fetching user profile', () => {
         id
         name
         email
+        logo {
+          id
+          publicId
+        }
       }
     }
   `;
@@ -61,7 +65,33 @@ describe('Fetching user profile', () => {
     expect(res.data.me).toEqual({
       id: user.id,
       name: user.name,
-      email: user.email
+      email: user.email,
+      logo: null
+    });
+  });
+
+  it('is able to fetch user profile with logo', async () => {
+    await factory.create('image', {
+      publicId: 'user-logo-id',
+      imageableType: 'UserLogo',
+      imageableId: user.id
+    });
+
+    const res = await request({
+      handler,
+      apiPath: path,
+      cookies: [`jwt=${user.jwt}`],
+      query
+    });
+
+    expect(res.data.me).toEqual({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      logo: {
+        id: expect.any(String),
+        publicId: 'user-logo-id'
+      }
     });
   });
 });

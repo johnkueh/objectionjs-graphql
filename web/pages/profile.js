@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { useMutation } from 'react-apollo-hooks';
+import { Image, Transformation } from 'cloudinary-react';
 import { useForm } from '../hooks/use-form';
 import { useUpload } from '../hooks/use-upload';
 import { withAuth } from '../lib/with-auth';
@@ -8,8 +10,9 @@ import Nav from '../components/nav';
 import Button from '../components/button';
 import AlertMessages from '../components/alert-messages';
 
-const Profile = ({ user: { email, name } }) => {
+const Profile = ({ user: { id, email, name, logo } }) => {
   const [success, setSuccess] = useState(null);
+  const upsertLogo = useMutation(UPSERT_LOGO);
   const updateUser = useMutation(UPDATE_USER);
   const { formProps, fieldProps, errors, submitting } = useForm({
     initialValues: {
@@ -27,7 +30,6 @@ const Profile = ({ user: { email, name } }) => {
       setSubmitting(false);
     }
   });
-  const [logo, setLogo] = useState(null);
   const Uploader = useUpload();
 
   return (
@@ -61,11 +63,25 @@ const Profile = ({ user: { email, name } }) => {
             />
           </div>
           <div className="mb-6">
-            {logo && <img className="w-full rounded object-cover" src={logo.secure_url} />}
+            {logo && (
+              <Image className="w-full rounded object-cover mb-3" publicId={logo.publicId}>
+                <Transformation width="600" crop="scale" />
+              </Image>
+            )}
             <Uploader
               title="logo"
               onUploaded={data => {
-                setLogo(data);
+                upsertLogo({
+                  variables: {
+                    input: {
+                      id: logo ? logo.id : null,
+                      imageableType: 'UserLogo',
+                      imageableId: id,
+                      publicId: data.public_id
+                    }
+                  },
+                  refetchQueries: [{ query: USER }]
+                });
               }}
             />
           </div>
@@ -91,5 +107,30 @@ const UPDATE_USER = gql`
     }
   }
 `;
+
+const UPSERT_LOGO = gql`
+  mutation($input: UpsertImageInput!) {
+    upsertImage(input: $input) {
+      id
+      publicId
+    }
+  }
+`;
+
+const USER = gql`
+  query {
+    me {
+      id
+      logo {
+        id
+        publicId
+      }
+    }
+  }
+`;
+
+Profile.propTypes = {
+  user: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired
+};
 
 export default withAuth(Profile);

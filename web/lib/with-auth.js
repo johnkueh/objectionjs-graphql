@@ -11,6 +11,10 @@ const ME = gql`
       id
       name
       email
+      logo {
+        id
+        publicId
+      }
     }
   }
 `;

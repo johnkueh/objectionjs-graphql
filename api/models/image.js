@@ -23,7 +23,7 @@ class Image extends Model {
 
   async $afterDelete(queryContext) {
     await super.$afterDelete(queryContext);
-    cloudinary.uploader.destroy(this.publicId);
+    await cloudinary.uploader.destroy(this.publicId);
   }
 }
 

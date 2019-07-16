@@ -12,7 +12,9 @@ import AlertMessages from '../components/alert-messages';
 
 const Profile = ({ user: { id, email, name, logo } }) => {
   const [success, setSuccess] = useState(null);
+  const [deletingLogo, setDeletingLogo] = useState(false);
   const upsertLogo = useMutation(UPSERT_LOGO);
+  const deleteLogo = useMutation(DELETE_LOGO);
   const updateUser = useMutation(UPDATE_USER);
   const { formProps, fieldProps, errors, submitting } = useForm({
     initialValues: {
@@ -64,9 +66,31 @@ const Profile = ({ user: { id, email, name, logo } }) => {
           </div>
           <div className="mb-6">
             {logo && (
-              <Image className="w-full rounded object-cover mb-3" publicId={logo.publicId}>
-                <Transformation width="600" crop="scale" />
-              </Image>
+              <div className="logo-wrapper relative mb-3">
+                <Image className="w-full rounded object-cover" publicId={logo.publicId}>
+                  <Transformation width="600" crop="scale" />
+                </Image>
+                <button
+                  onClick={async e => {
+                    e.preventDefault();
+                    setDeletingLogo(true);
+                    await deleteLogo({
+                      variables: {
+                        input: {
+                          id: logo.id
+                        }
+                      },
+                      refetchQueries: [{ query: USER }]
+                    });
+                    setDeletingLogo(false);
+                  }}
+                  disabled={deletingLogo}
+                  className="absolute top-0 right-0 text-gray-800 py-1 px-2 rounded text-xs bg-white mt-2 mr-2"
+                  type="button"
+                >
+                  {deletingLogo ? 'Loading...' : 'Remove'}
+                </button>
+              </div>
             )}
             <Uploader
               title="logo"
@@ -94,6 +118,23 @@ const Profile = ({ user: { id, email, name, logo } }) => {
           </Button>
         </form>
       </div>
+      <style jsx>
+        {`
+          .logo-wrapper {
+            opacity: ${deletingLogo ? 0.5 : 1};
+          }
+          .logo-wrapper button {
+            opacity: 0;
+            visiblity: hidden;
+            transition: all 0.3s ease;
+          }
+          .logo-wrapper:hover button {
+            opacity: 1;
+            visiblity: visible;
+            transition: all 0.3s ease;
+          }
+        `}
+      </style>
     </div>
   );
 };
@@ -113,6 +154,14 @@ const UPSERT_LOGO = gql`
     upsertImage(input: $input) {
       id
       publicId
+    }
+  }
+`;
+
+const DELETE_LOGO = gql`
+  mutation($input: DeleteImageInput!) {
+    deleteImage(input: $input) {
+      count
     }
   }
 `;

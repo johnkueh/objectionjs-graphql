@@ -229,6 +229,9 @@ describe('Updating user profile', () => {
       expect(res.data.deleteImage).toEqual({
         count: 1
       });
+
+      const userLogo = await user.$relatedQuery('logo');
+      expect(userLogo).toBeUndefined();
     });
   });
 });

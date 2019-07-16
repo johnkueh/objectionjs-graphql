@@ -23,6 +23,13 @@ type DeleteWorkspacePayload {
   count: Int!
 }
 
+type Image {
+  caption: String
+  id: ID!
+  position: Int
+  publicId: String!
+}
+
 input LoginInput {
   email: String!
   password: String!
@@ -35,6 +42,7 @@ type Mutation {
   signup(input: SignupInput!): AuthPayload!
   updateUser(input: UpdateUserInput!): User!
   updateWorkspace(input: UpdateWorkspaceInput!): Workspace!
+  upsertImage(input: UpsertImageInput!): Image!
 }
 
 type Query {
@@ -51,6 +59,7 @@ input SignupInput {
 
 input UpdateUserInput {
   email: String
+  logo: String
   name: String
   password: String
 }
@@ -58,6 +67,15 @@ input UpdateUserInput {
 input UpdateWorkspaceInput {
   id: String!
   name: String!
+}
+
+input UpsertImageInput {
+  caption: String
+  id: ID
+  imageableId: String
+  imageableType: String
+  position: Int
+  publicId: String
 }
 
 type User {

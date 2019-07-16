@@ -32,3 +32,4 @@ export const WorkspaceCrudType = crudType({
 });
 
 export * from './user';
+export * from './image';

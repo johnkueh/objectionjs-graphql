@@ -27,6 +27,7 @@ class User extends Model {
 
   static get relationMappings() {
     const Workspace = require('./workspace').default;
+    const Image = require('./image').default;
 
     return {
       workspaces: {
@@ -39,6 +40,20 @@ class User extends Model {
             to: 'users_workspaces.workspaceId'
           },
           to: 'workspaces.id'
+        }
+      },
+      logo: {
+        relation: Model.HasOneRelation,
+        modelClass: Image,
+        filter(builder) {
+          builder.where('imageableType', 'User');
+        },
+        beforeInsert(model) {
+          model.commentableType = 'User';
+        },
+        join: {
+          from: 'users.id',
+          to: 'images.imageableId'
         }
       }
     };

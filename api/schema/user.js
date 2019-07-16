@@ -106,6 +106,7 @@ export const UpdateUserType = inputObjectType({
     t.string('name', { required: false });
     t.string('email', { required: false });
     t.string('password', { required: false });
+    t.string('logo', { required: false });
   }
 });
 

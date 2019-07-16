@@ -34,7 +34,7 @@ describe('Creating images', () => {
         input: {
           publicId: 'xxxpublicid',
           caption: 'A test caption',
-          imageableType: 'User',
+          imageableType: 'UserLogo',
           imageableId: user.id
         }
       }

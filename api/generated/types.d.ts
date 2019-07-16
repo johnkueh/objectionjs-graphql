@@ -134,6 +134,7 @@ export interface NexusGenFieldTypes {
   User: { // field return type
     email: string; // String!
     id: string; // ID!
+    logo: NexusGenRootTypes['Image'] | null; // Image
     name: string; // String!
   }
   Workspace: { // field return type

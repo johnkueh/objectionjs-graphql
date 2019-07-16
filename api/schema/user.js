@@ -1,6 +1,7 @@
 import { objectType, inputObjectType, queryField, mutationField, arg } from 'nexus';
 import ValidationErrors from '../lib/validation-errors';
 import User from '../models/user';
+import Image from '../models/image';
 
 export const AuthPayloadType = objectType({
   name: 'AuthPayload',
@@ -16,6 +17,13 @@ export const UserType = objectType({
     t.id('id');
     t.string('name');
     t.string('email');
+    t.field('logo', {
+      type: 'Image',
+      nullable: true,
+      resolve: async parent => {
+        return parent.$relatedQuery('logo');
+      }
+    });
   }
 });
 

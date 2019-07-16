@@ -46,10 +46,10 @@ class User extends Model {
         relation: Model.HasOneRelation,
         modelClass: Image,
         filter(builder) {
-          builder.where('imageableType', 'User');
+          builder.where('imageableType', 'UserLogo');
         },
         beforeInsert(model) {
-          model.commentableType = 'User';
+          model.imageableType = 'UserLogo';
         },
         join: {
           from: 'users.id',

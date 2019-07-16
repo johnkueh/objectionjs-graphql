@@ -81,6 +81,7 @@ input UpsertImageInput {
 type User {
   email: String!
   id: ID!
+  logo: Image
   name: String!
 }
 

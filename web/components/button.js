@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Spinner from './spinner';
 
 const Button = ({ loading, className, children, ...props }) => {
   const disabledClass = loading ? `${className} opacity-50 cursor-not-allowed` : className;
 
   return (
     <button className={disabledClass} type="submit" disabled={loading} {...props}>
-      {loading ? <img alt="spinner" width="25" src="/static/tail-spin.svg" /> : children}
+      {loading ? <Spinner width="25px" height="25px" /> : children}
     </button>
   );
 };

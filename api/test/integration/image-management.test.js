@@ -1,6 +1,6 @@
 import '../support/transactional-tests';
 import '../factories';
-
+import cloudinary from 'cloudinary';
 import factory from 'factory-girl';
 import request from '../support/request';
 import handler, { path } from '../../src/index';
@@ -201,5 +201,7 @@ describe('Deleting images', () => {
     expect(res.errors[0].extensions.exception.errors).toEqual({
       auth: 'You are not authorized to perform this action'
     });
+
+    expect(cloudinary.uploader.destroy).not.toHaveBeenCalled();
   });
 });

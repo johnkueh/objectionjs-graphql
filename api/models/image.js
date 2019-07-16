@@ -1,4 +1,5 @@
 import { Model } from './base';
+import cloudinary from 'cloudinary';
 
 class Image extends Model {
   static get tableName() {
@@ -18,6 +19,11 @@ class Image extends Model {
         .matches(/(UserLogo)/),
       imageableId: this.yup.string().required()
     });
+  }
+
+  async $afterDelete(queryContext) {
+    await super.$afterDelete(queryContext);
+    cloudinary.uploader.destroy(this.publicId);
   }
 }
 

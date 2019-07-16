@@ -54,6 +54,9 @@ export const DeleteImageMutation = mutationField(`deleteImage`, {
   },
   resolve: async (parent, { input }) => {
     const { id } = input;
-    return { count: await Image.query().deleteById(id) };
+    const image = await Image.query().findById(id);
+    return {
+      count: image.$query().deleteById(id)
+    };
   }
 });

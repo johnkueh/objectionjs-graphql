@@ -1,6 +1,6 @@
 import '../support/transactional-tests';
 import '../factories';
-
+import cloudinary from 'cloudinary';
 import factory from 'factory-girl';
 import request from '../support/request';
 import handler, { path } from '../../src/index';
@@ -205,6 +205,8 @@ describe('Updating user profile', () => {
       expect(res.errors[0].extensions.exception.errors).toEqual({
         auth: 'You are not authorized to perform this action'
       });
+
+      expect(cloudinary.uploader.destroy).not.toHaveBeenCalled();
     });
 
     it('is able to delete logo owned by user', async () => {
@@ -232,6 +234,8 @@ describe('Updating user profile', () => {
 
       const userLogo = await user.$relatedQuery('logo');
       expect(userLogo).toBeUndefined();
+
+      expect(cloudinary.uploader.destroy).toHaveBeenCalledWith(image.publicId);
     });
   });
 });

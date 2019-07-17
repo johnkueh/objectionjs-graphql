@@ -7,7 +7,7 @@ class Image extends Model {
   }
 
   static get validateUniqueness() {
-    return ['publicId'];
+    return ['publicId', ['imageableId', { scope: 'imageableType' }]];
   }
 
   static get validationSchema() {
@@ -16,7 +16,7 @@ class Image extends Model {
       imageableType: this.yup
         .string()
         .required()
-        .matches(/(UserLogo)/),
+        .matches(/(UserLogo|UserProfilePhoto)/),
       imageableId: this.yup.string().required()
     });
   }

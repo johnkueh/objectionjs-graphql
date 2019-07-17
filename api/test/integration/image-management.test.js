@@ -109,6 +109,60 @@ describe('Upserting images', () => {
     });
   });
 
+  it('is not able to create an image with existing imageableId', async () => {
+    await factory.create('image', {
+      publicId: 'existing-public-id',
+      imageableType: 'UserLogo',
+      imageableId: user.id
+    });
+
+    const res = await request({
+      handler,
+      apiPath: path,
+      cookies: [`jwt=${user.jwt}`],
+      query,
+      variables: {
+        input: {
+          publicId: 'new-public-id',
+          imageableId: user.id,
+          imageableType: 'UserLogo'
+        }
+      }
+    });
+
+    expect(res.errors[0].extensions.exception.errors).toEqual({
+      imageableId: 'ImageableId with scope imageableType is already taken'
+    });
+  });
+
+  it('is able to create an image with existing imageableId but different scope', async () => {
+    await factory.create('image', {
+      publicId: 'existing-public-id',
+      imageableType: 'UserLogo',
+      imageableId: user.id
+    });
+
+    const res = await request({
+      handler,
+      apiPath: path,
+      cookies: [`jwt=${user.jwt}`],
+      query,
+      variables: {
+        input: {
+          publicId: 'xxxpublicid',
+          imageableId: user.id,
+          imageableType: 'UserProfilePhoto'
+        }
+      }
+    });
+
+    expect(res.data.upsertImage).toEqual({
+      id: expect.any(String),
+      publicId: 'xxxpublicid',
+      caption: null
+    });
+  });
+
   it('is able to create an image with valid fields', async () => {
     const res = await request({
       handler,

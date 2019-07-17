@@ -9,18 +9,30 @@ function ObjectionUniqueness(Model) {
       const uniqueFields = this.constructor.validateUniqueness;
       if (uniqueFields) {
         const errors = {};
-        const queries = uniqueFields.map(fieldName => {
-          const value = this[fieldName];
-
-          return this.constructor
+        const queries = uniqueFields.map(field => {
+          const { fieldName, scope } = parseFieldName(field);
+          let query = this.constructor
             .query()
-            .where(fieldName, value)
-            .limit(1);
+            .limit(1)
+            .where(fieldName, this[fieldName]);
+
+          if (scope) {
+            query = query.where(scope, this[scope]);
+          }
+
+          return query;
         });
         await Promise.all(queries).then(results => {
-          uniqueFields.map((fieldName, idx) => {
+          uniqueFields.map((field, idx) => {
             if (results[idx].length > 0) {
-              errors[fieldName] = v.capitalize(`${fieldName} is already taken`);
+              const { fieldName, scope } = parseFieldName(field);
+              if (scope) {
+                errors[fieldName] = v.capitalize(
+                  `${fieldName} with scope ${scope} is already taken`
+                );
+              } else {
+                errors[fieldName] = v.capitalize(`${fieldName} is already taken`);
+              }
             }
           });
         });
@@ -34,6 +46,20 @@ function ObjectionUniqueness(Model) {
     }
   };
 }
+
+const parseFieldName = field => {
+  let fieldName = field;
+  let scope = null;
+
+  if (Array.isArray(field)) {
+    [fieldName, { scope }] = field;
+  }
+
+  return {
+    fieldName,
+    scope
+  };
+};
 
 module.exports = {
   ObjectionUniqueness

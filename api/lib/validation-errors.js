@@ -1,4 +1,4 @@
-import { UserInputError } from 'apollo-server-micro';
+import { UserInputError } from 'apollo-server-lambda';
 
 const ValidationErrors = errors => new UserInputError('ValidationError', { errors });
 

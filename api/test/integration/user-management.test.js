@@ -2,13 +2,12 @@ import '../support/transactional-tests';
 import '../factories';
 import cloudinary from 'cloudinary';
 import factory from 'factory-girl';
-import request from '../support/request';
-import handler, { path } from '../../src/index';
+import { query } from '../support/apollo-test-helper';
 import User from '../../models/user';
 
 describe('Fetching user profile', () => {
   let user;
-  const query = `
+  const ME = `
     query {
       me {
         id
@@ -30,43 +29,36 @@ describe('Fetching user profile', () => {
   });
 
   it('is not able to fetch user profile without credentials', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      query
+    const res = await query({
+      query: ME
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is not able to fetch user profile with wrong credentials', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=wrongjwt`],
-      query
+    const res = await query({
+      query: ME
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is able to fetch user profile with credentials', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query
+    const res = await query({
+      context: { user },
+      query: ME
     });
 
-    expect(res.data.me).toEqual({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      logo: null
+    expect(res).toMatchSnapshot({
+      data: {
+        me: {
+          id: expect.any(String),
+          name: user.name,
+          email: user.email,
+          logo: null
+        }
+      }
     });
   });
 
@@ -77,20 +69,22 @@ describe('Fetching user profile', () => {
       imageableId: user.id
     });
 
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query
+    const res = await query({
+      context: { user },
+      query: ME
     });
 
-    expect(res.data.me).toEqual({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      logo: {
-        id: expect.any(String),
-        publicId: 'user-logo-id'
+    expect(res).toMatchSnapshot({
+      data: {
+        me: {
+          id: expect.any(String),
+          name: user.name,
+          email: user.email,
+          logo: {
+            id: expect.any(String),
+            publicId: 'user-logo-id'
+          }
+        }
       }
     });
   });
@@ -98,7 +92,7 @@ describe('Fetching user profile', () => {
 
 describe('Updating user profile', () => {
   let user;
-  const query = `
+  const UPDATE_USER = `
     mutation($input: UpdateUserInput!) {
       updateUser(input: $input) {
         id
@@ -116,11 +110,9 @@ describe('Updating user profile', () => {
   });
 
   it('can update user profile with valid fields', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: UPDATE_USER,
       variables: {
         input: {
           email: 'darth@vader.com',
@@ -129,19 +121,21 @@ describe('Updating user profile', () => {
       }
     });
 
-    expect(res.data.updateUser).toEqual({
-      id: user.id,
-      name: 'Darth Vader',
-      email: 'darth@vader.com'
+    expect(res).toMatchSnapshot({
+      data: {
+        updateUser: {
+          id: expect.any(String),
+          name: 'Darth Vader',
+          email: 'darth@vader.com'
+        }
+      }
     });
   });
 
   it('can update user password', async () => {
-    await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    await query({
+      context: { user },
+      query: UPDATE_USER,
       variables: {
         input: {
           password: 'newpassword'
@@ -154,11 +148,9 @@ describe('Updating user profile', () => {
   });
 
   it('fails to update with invalid fields', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: UPDATE_USER,
       variables: {
         input: {
           name: '',
@@ -168,15 +160,11 @@ describe('Updating user profile', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      name: 'Name must be at least 1 characters',
-      email: 'Email must be a valid email',
-      password: 'Password must be at least 6 characters'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   describe('Managing user logo', () => {
-    const deleteImageMutation = `
+    const DELETE_IMAGE = `
       mutation($input: DeleteImageInput!) {
         deleteImage(input: $input) {
           count
@@ -190,11 +178,9 @@ describe('Updating user profile', () => {
         imageableId: 'other-user-id'
       });
 
-      const res = await request({
-        handler,
-        apiPath: path,
-        cookies: [`jwt=${user.jwt}`],
-        query: deleteImageMutation,
+      const res = await query({
+        context: { user },
+        query: DELETE_IMAGE,
         variables: {
           input: {
             id: image.id
@@ -202,10 +188,7 @@ describe('Updating user profile', () => {
         }
       });
 
-      expect(res.errors[0].extensions.exception.errors).toEqual({
-        auth: 'You are not authorized to perform this action'
-      });
-
+      expect(res.errors[0].extensions).toMatchSnapshot();
       expect(cloudinary.uploader.destroy).not.toHaveBeenCalled();
     });
 
@@ -216,11 +199,9 @@ describe('Updating user profile', () => {
         imageableId: user.id
       });
 
-      const res = await request({
-        handler,
-        apiPath: path,
-        cookies: [`jwt=${user.jwt}`],
-        query: deleteImageMutation,
+      const res = await query({
+        context: { user },
+        query: DELETE_IMAGE,
         variables: {
           input: {
             id: image.id
@@ -228,8 +209,12 @@ describe('Updating user profile', () => {
         }
       });
 
-      expect(res.data.deleteImage).toEqual({
-        count: 1
+      expect(res).toMatchSnapshot({
+        data: {
+          deleteImage: {
+            count: 1
+          }
+        }
       });
 
       const userLogo = await user.$relatedQuery('logo');

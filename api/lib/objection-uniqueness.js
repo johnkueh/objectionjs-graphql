@@ -1,4 +1,4 @@
-const { UserInputError } = require('apollo-server-micro');
+const { UserInputError } = require('apollo-server-lambda');
 const v = require('voca');
 
 function ObjectionUniqueness(Model) {

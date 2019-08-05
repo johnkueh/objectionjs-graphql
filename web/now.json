@@ -2,15 +2,8 @@
   "version": 2,
   "name": "objectionjs-graphql-starter",
   "regions": ["iad1"],
-  "builds": [
-    { "src": "web/next.config.js", "use": "@now/next" },
-    { "src": "api/src/*.js", "use": "@now/node" }
-  ],
+  "builds": [{ "src": "web/next.config.js", "use": "@now/next" }],
   "routes": [
-    {
-      "src": "/api/graphql",
-      "dest": "/api/src/index.js"
-    },
     {
       "src": "/workspaces/new",
       "dest": "/web/workspaces?new=true",
@@ -33,9 +26,6 @@
       }
     }
   ],
-  "env": {
-    "DATABASE_URL": "@objectionjs_database_url"
-  },
   "build": {
     "env": {
       "GRAPHQL_ENDPOINT": "@objectionjs_graphql_endpoint"

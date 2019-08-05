@@ -11,6 +11,7 @@ cypress.json
 /api/node_modules
 /api/.env
 /api/*.log
+/api/.webpack
 
 /web/node_modules
 /web/.env

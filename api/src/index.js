@@ -22,11 +22,11 @@ const schema = applyMiddleware(
   permissions
 );
 
-const userContext = async ({ req }) => {
+const userContext = async ({ event }) => {
   let user = null;
 
   try {
-    const { jwt } = cookie.parse(req.headers.cookie);
+    const { jwt } = cookie.parse(event.headers.Cookie);
     if (jwt) {
       const hash = jsonwebtoken.verify(jwt, JWTSECRET);
       user = await User.query().findById(hash.id);
@@ -54,7 +54,6 @@ const server = makeServer({
 });
 
 export const JWTSECRET = 'JWTSECRET';
-export const path = '/api/graphql';
 export const jwtSign = ({ id, email }) => jsonwebtoken.sign({ id, email }, JWTSECRET);
 
 export const graphqlHandler = server.createHandler({

@@ -7,8 +7,9 @@
   "scripts": {
     "nexus": "cd api && yarn nexus",
     "cypress": "cd api && yarn cypress",
-    "now": "now dev",
-    "dev": "npm-run-all --parallel nexus now cypress"
+    "start:api": "cd api && sls offline --port 4000",
+    "start:web": "cd web && yarn next",
+    "dev": "yarn start:api & yarn start:web & yarn nexus"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

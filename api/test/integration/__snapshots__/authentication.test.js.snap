@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Logging in is able to login with correct credentials 1`] = `
+Object {
+  "data": Object {
+    "login": Object {
+      "jwt": Any<String>,
+      "user": Object {
+        "email": "john@doe.com",
+        "id": Any<String>,
+        "name": "John Doe",
+      },
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Logging in is not able to login with wrong credentials 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "Please check your credentials and try again.",
+    },
+  },
+}
+`;
+
+exports[`Signing up is able to signup successfully 1`] = `
+Object {
+  "data": Object {
+    "signup": Object {
+      "jwt": Any<String>,
+      "user": Object {
+        "email": "john@doe.com",
+        "id": Any<String>,
+        "name": "John Doe",
+      },
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Signing up is not able to signup with missing fields 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "email": "Email must be a valid email",
+      "name": "Name must be at least 1 characters",
+      "password": "Password must be at least 6 characters",
+    },
+  },
+}
+`;
+
+exports[`Signing up is not able to signup with taken email 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "email": "Email is already taken",
+    },
+  },
+}
+`;

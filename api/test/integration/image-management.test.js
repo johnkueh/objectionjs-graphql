@@ -34,9 +34,7 @@ describe('Upserting images', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is not able to create an image with missing fields', async () => {
@@ -50,11 +48,7 @@ describe('Upserting images', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      publicId: 'PublicId is a required field',
-      imageableType: 'ImageableType is a required field',
-      imageableId: 'ImageableId is a required field'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is not able to create an image with invalid fields', async () => {
@@ -71,9 +65,7 @@ describe('Upserting images', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors.imageableType).toContain(
-      'ImageableType must match the following'
-    );
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is not able to create an image with existing publicId', async () => {
@@ -95,9 +87,7 @@ describe('Upserting images', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      publicId: 'PublicId is already taken'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is not able to create an image with existing imageableId', async () => {
@@ -119,9 +109,7 @@ describe('Upserting images', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      imageableId: 'ImageableId with scope imageableType is already taken'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is able to create an image with existing imageableId but different scope', async () => {
@@ -143,10 +131,14 @@ describe('Upserting images', () => {
       }
     });
 
-    expect(res.data.upsertImage).toEqual({
-      id: expect.any(String),
-      publicId: 'xxxpublicid',
-      caption: null
+    expect(res).toMatchSnapshot({
+      data: {
+        upsertImage: {
+          id: expect.any(String),
+          publicId: 'xxxpublicid',
+          caption: null
+        }
+      }
     });
   });
 
@@ -164,10 +156,14 @@ describe('Upserting images', () => {
       }
     });
 
-    expect(res.data.upsertImage).toEqual({
-      id: expect.any(String),
-      publicId: 'xxxpublicid',
-      caption: 'A test caption'
+    expect(res).toMatchSnapshot({
+      data: {
+        upsertImage: {
+          id: expect.any(String),
+          publicId: 'xxxpublicid',
+          caption: 'A test caption'
+        }
+      }
     });
 
     const userLogo = await user.$relatedQuery('logo');
@@ -195,10 +191,14 @@ describe('Upserting images', () => {
       }
     });
 
-    expect(res.data.upsertImage).toEqual({
-      id: image.id,
-      caption: null,
-      publicId: 'new-public-id'
+    expect(res).toMatchSnapshot({
+      data: {
+        upsertImage: {
+          id: expect.any(String),
+          caption: null,
+          publicId: 'new-public-id'
+        }
+      }
     });
 
     const userLogo = await user.$relatedQuery('logo');
@@ -233,10 +233,7 @@ describe('Deleting images', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
-
+    expect(res.errors[0].extensions).toMatchSnapshot();
     expect(cloudinary.uploader.destroy).not.toHaveBeenCalled();
   });
 });

@@ -34,9 +34,7 @@ describe('Logging in', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'Please check your credentials and try again.'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is able to login with correct credentials', async () => {
@@ -50,12 +48,14 @@ describe('Logging in', () => {
       }
     });
 
-    expect(res.data.login).toEqual({
-      jwt: expect.any(String),
-      user: {
-        id: expect.any(String),
-        email: 'john@doe.com',
-        name: 'John Doe'
+    expect(res).toMatchSnapshot({
+      data: {
+        login: {
+          jwt: expect.any(String),
+          user: {
+            id: expect.any(String)
+          }
+        }
       }
     });
   });
@@ -86,12 +86,16 @@ describe('Signing up', () => {
       }
     });
 
-    expect(res.data.signup).toEqual({
-      jwt: expect.any(String),
-      user: {
-        id: expect.any(String),
-        email: 'john@doe.com',
-        name: 'John Doe'
+    expect(res).toMatchSnapshot({
+      data: {
+        signup: {
+          jwt: expect.any(String),
+          user: {
+            id: expect.any(String),
+            email: 'john@doe.com',
+            name: 'John Doe'
+          }
+        }
       }
     });
   });
@@ -108,11 +112,7 @@ describe('Signing up', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      name: 'Name must be at least 1 characters',
-      email: 'Email must be a valid email',
-      password: 'Password must be at least 6 characters'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is not able to signup with taken email', async () => {
@@ -132,8 +132,6 @@ describe('Signing up', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      email: 'Email is already taken'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 });

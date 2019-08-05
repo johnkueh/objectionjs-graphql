@@ -33,9 +33,7 @@ describe('Fetching user profile', () => {
       query: ME
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is not able to fetch user profile with wrong credentials', async () => {
@@ -43,9 +41,7 @@ describe('Fetching user profile', () => {
       query: ME
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is able to fetch user profile with credentials', async () => {
@@ -54,11 +50,15 @@ describe('Fetching user profile', () => {
       query: ME
     });
 
-    expect(res.data.me).toEqual({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      logo: null
+    expect(res).toMatchSnapshot({
+      data: {
+        me: {
+          id: expect.any(String),
+          name: user.name,
+          email: user.email,
+          logo: null
+        }
+      }
     });
   });
 
@@ -74,13 +74,17 @@ describe('Fetching user profile', () => {
       query: ME
     });
 
-    expect(res.data.me).toEqual({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      logo: {
-        id: expect.any(String),
-        publicId: 'user-logo-id'
+    expect(res).toMatchSnapshot({
+      data: {
+        me: {
+          id: expect.any(String),
+          name: user.name,
+          email: user.email,
+          logo: {
+            id: expect.any(String),
+            publicId: 'user-logo-id'
+          }
+        }
       }
     });
   });
@@ -117,10 +121,14 @@ describe('Updating user profile', () => {
       }
     });
 
-    expect(res.data.updateUser).toEqual({
-      id: user.id,
-      name: 'Darth Vader',
-      email: 'darth@vader.com'
+    expect(res).toMatchSnapshot({
+      data: {
+        updateUser: {
+          id: expect.any(String),
+          name: 'Darth Vader',
+          email: 'darth@vader.com'
+        }
+      }
     });
   });
 
@@ -152,11 +160,7 @@ describe('Updating user profile', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      name: 'Name must be at least 1 characters',
-      email: 'Email must be a valid email',
-      password: 'Password must be at least 6 characters'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   describe('Managing user logo', () => {
@@ -184,10 +188,7 @@ describe('Updating user profile', () => {
         }
       });
 
-      expect(res.errors[0].extensions.exception.errors).toEqual({
-        auth: 'You are not authorized to perform this action'
-      });
-
+      expect(res.errors[0].extensions).toMatchSnapshot();
       expect(cloudinary.uploader.destroy).not.toHaveBeenCalled();
     });
 
@@ -208,8 +209,12 @@ describe('Updating user profile', () => {
         }
       });
 
-      expect(res.data.deleteImage).toEqual({
-        count: 1
+      expect(res).toMatchSnapshot({
+        data: {
+          deleteImage: {
+            count: 1
+          }
+        }
       });
 
       const userLogo = await user.$relatedQuery('logo');

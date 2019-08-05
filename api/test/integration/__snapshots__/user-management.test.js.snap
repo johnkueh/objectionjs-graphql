@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fetching user profile is able to fetch user profile with credentials 1`] = `
+Object {
+  "data": Object {
+    "me": Object {
+      "email": "john@doe.com",
+      "id": Any<String>,
+      "logo": null,
+      "name": "John Doe",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Fetching user profile is able to fetch user profile with logo 1`] = `
+Object {
+  "data": Object {
+    "me": Object {
+      "email": "john@doe.com",
+      "id": Any<String>,
+      "logo": Object {
+        "id": Any<String>,
+        "publicId": "user-logo-id",
+      },
+      "name": "John Doe",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Fetching user profile is not able to fetch user profile with wrong credentials 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;
+
+exports[`Fetching user profile is not able to fetch user profile without credentials 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;
+
+exports[`Updating user profile Managing user logo is able to delete logo owned by user 1`] = `
+Object {
+  "data": Object {
+    "deleteImage": Object {
+      "count": 1,
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Updating user profile Managing user logo is not able to delete logo owned by other user 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;
+
+exports[`Updating user profile can update user profile with valid fields 1`] = `
+Object {
+  "data": Object {
+    "updateUser": Object {
+      "email": "darth@vader.com",
+      "id": Any<String>,
+      "name": "Darth Vader",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Updating user profile fails to update with invalid fields 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "email": "Email must be a valid email",
+      "name": "Name must be at least 1 characters",
+      "password": "Password must be at least 6 characters",
+    },
+  },
+}
+`;

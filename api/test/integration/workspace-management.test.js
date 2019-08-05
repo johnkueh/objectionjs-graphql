@@ -32,7 +32,16 @@ describe('Fetching workspaces', () => {
       context: { user }
     });
 
-    expect(res.data.workspaces.map(({ id }) => id)).toEqual(userWorkspaces.map(({ id }) => id));
+    expect(res).toMatchSnapshot({
+      data: {
+        workspaces: [
+          {
+            id: expect.any(String),
+            name: userWorkspaces[0].name
+          }
+        ]
+      }
+    });
   });
 
   it("is not able to fetch list of user's workspaces without login", async () => {
@@ -40,9 +49,7 @@ describe('Fetching workspaces', () => {
       query: WORKSPACES
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 });
 
@@ -76,9 +83,13 @@ describe('Fetching a workspace', () => {
       }
     });
 
-    expect(res.data.workspace).toEqual({
-      id: expect.any(String),
-      name: user.workspaces[0].name
+    expect(res).toMatchSnapshot({
+      data: {
+        workspace: {
+          id: expect.any(String),
+          name: user.workspaces[0].name
+        }
+      }
     });
   });
 
@@ -92,9 +103,7 @@ describe('Fetching a workspace', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it("is not able to fetch other user's workspace", async () => {
@@ -109,9 +118,7 @@ describe('Fetching a workspace', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 });
 
@@ -146,12 +153,16 @@ describe('Creating workspaces', () => {
 
     const userWorkspaces = await user.$relatedQuery('workspaces');
 
-    expect(res.data.createWorkspace).toEqual({
-      id: expect.any(String),
-      name: 'New workspace'
+    expect(res).toMatchSnapshot({
+      data: {
+        createWorkspace: {
+          id: expect.any(String),
+          name: 'New workspace'
+        }
+      }
     });
 
-    expect(userWorkspaces[0]).toEqual({
+    expect(userWorkspaces[0]).toMatchSnapshot({
       id: expect.any(String),
       name: 'New workspace'
     });
@@ -168,9 +179,7 @@ describe('Creating workspaces', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      name: 'Name must be at least 1 characters'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is not able to create workspace without login', async () => {
@@ -183,9 +192,7 @@ describe('Creating workspaces', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 });
 
@@ -228,9 +235,13 @@ describe('Updating and deleting workspaces', () => {
       }
     });
 
-    expect(res.data.updateWorkspace).toEqual({
-      id: expect.any(String),
-      name: 'Updated name'
+    expect(res).toMatchSnapshot({
+      data: {
+        updateWorkspace: {
+          id: expect.any(String),
+          name: 'Updated name'
+        }
+      }
     });
   });
 
@@ -246,9 +257,7 @@ describe('Updating and deleting workspaces', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      name: 'Name must be at least 1 characters'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is not able to update workspace without login', async () => {
@@ -262,9 +271,7 @@ describe('Updating and deleting workspaces', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it("is not able to update others' workspace", async () => {
@@ -280,9 +287,7 @@ describe('Updating and deleting workspaces', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 
   it('is able to delete own workspace', async () => {
@@ -317,8 +322,6 @@ describe('Updating and deleting workspaces', () => {
       }
     });
 
-    expect(res.errors[0].extensions.exception.errors).toEqual({
-      auth: 'You are not authorized to perform this action'
-    });
+    expect(res.errors[0].extensions).toMatchSnapshot();
   });
 });

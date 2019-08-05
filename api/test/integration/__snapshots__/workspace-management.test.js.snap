@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Creating workspaces is able to create a workspace with valid fields 1`] = `
+Object {
+  "data": Object {
+    "createWorkspace": Object {
+      "id": Any<String>,
+      "name": "New workspace",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Creating workspaces is able to create a workspace with valid fields 2`] = `
+Object {
+  "id": Any<String>,
+  "name": "New workspace",
+}
+`;
+
+exports[`Creating workspaces is not able to create a workspace with invalid fields 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "name": "Name must be at least 1 characters",
+    },
+  },
+}
+`;
+
+exports[`Creating workspaces is not able to create workspace without login 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;
+
+exports[`Fetching a workspace is able to fetch a user workspace 1`] = `
+Object {
+  "data": Object {
+    "workspace": Object {
+      "id": Any<String>,
+      "name": "User Workspace",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Fetching a workspace is not able to fetch a user workspace without login 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;
+
+exports[`Fetching a workspace is not able to fetch other user's workspace 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;
+
+exports[`Fetching workspaces is able to fetch list of user's workspaces 1`] = `
+Object {
+  "data": Object {
+    "workspaces": Array [
+      Object {
+        "id": Any<String>,
+        "name": "User Workspace",
+      },
+    ],
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Fetching workspaces is not able to fetch list of user's workspaces without login 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;
+
+exports[`Updating and deleting workspaces is able to update workspace with valid fields 1`] = `
+Object {
+  "data": Object {
+    "updateWorkspace": Object {
+      "id": Any<String>,
+      "name": "Updated name",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Updating and deleting workspaces is not able to delete others' workspace 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;
+
+exports[`Updating and deleting workspaces is not able to update others' workspace 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;
+
+exports[`Updating and deleting workspaces is not able to update workspace with invalid fields 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "name": "Name must be at least 1 characters",
+    },
+  },
+}
+`;
+
+exports[`Updating and deleting workspaces is not able to update workspace without login 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;

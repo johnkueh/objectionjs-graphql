@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Deleting images is not able to delete image without auth 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;
+
+exports[`Upserting images is able to create an image with existing imageableId but different scope 1`] = `
+Object {
+  "data": Object {
+    "upsertImage": Object {
+      "caption": null,
+      "id": Any<String>,
+      "publicId": "xxxpublicid",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Upserting images is able to create an image with valid fields 1`] = `
+Object {
+  "data": Object {
+    "upsertImage": Object {
+      "caption": "A test caption",
+      "id": Any<String>,
+      "publicId": "xxxpublicid",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Upserting images is able to update an existing image with valid fields, does not create a new image 1`] = `
+Object {
+  "data": Object {
+    "upsertImage": Object {
+      "caption": null,
+      "id": Any<String>,
+      "publicId": "new-public-id",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Upserting images is not able to create an image with existing imageableId 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "imageableId": "ImageableId with scope imageableType is already taken",
+    },
+  },
+}
+`;
+
+exports[`Upserting images is not able to create an image with existing publicId 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "publicId": "PublicId is already taken",
+    },
+  },
+}
+`;
+
+exports[`Upserting images is not able to create an image with invalid fields 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "imageableType": "ImageableType must match the following: \\"/(UserLogo|UserProfilePhoto)/\\"",
+    },
+  },
+}
+`;
+
+exports[`Upserting images is not able to create an image with missing fields 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "imageableId": "ImageableId is a required field",
+      "imageableType": "ImageableType is a required field",
+      "publicId": "PublicId is a required field",
+    },
+  },
+}
+`;
+
+exports[`Upserting images is not able to upsert image without auth 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;

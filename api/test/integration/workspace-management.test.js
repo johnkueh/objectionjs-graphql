@@ -1,13 +1,11 @@
 import '../support/transactional-tests';
 import '../factories';
-
 import factory from 'factory-girl';
-import request from '../support/request';
-import handler, { path } from '../../src/index';
+import { query } from '../support/apollo-test-helper';
 
 describe('Fetching workspaces', () => {
   let user;
-  const query = `
+  const WORKSPACES = `
     query {
       workspaces {
         id
@@ -29,21 +27,17 @@ describe('Fetching workspaces', () => {
     });
     const userWorkspaces = await user.$relatedQuery('workspaces');
 
-    const res = await request({
-      handler,
-      apiPath: path,
-      query,
-      cookies: [`jwt=${user.jwt}`]
+    const res = await query({
+      query: WORKSPACES,
+      context: { user }
     });
 
     expect(res.data.workspaces.map(({ id }) => id)).toEqual(userWorkspaces.map(({ id }) => id));
   });
 
   it("is not able to fetch list of user's workspaces without login", async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      query
+    const res = await query({
+      query: WORKSPACES
     });
 
     expect(res.errors[0].extensions.exception.errors).toEqual({
@@ -72,10 +66,8 @@ describe('Fetching a workspace', () => {
   });
 
   it('is able to fetch a user workspace', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
+    const res = await query({
+      context: { user },
       query: WORKSPACE,
       variables: {
         input: {
@@ -91,9 +83,7 @@ describe('Fetching a workspace', () => {
   });
 
   it('is not able to fetch a user workspace without login', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
+    const res = await query({
       query: WORKSPACE,
       variables: {
         input: {
@@ -109,10 +99,8 @@ describe('Fetching a workspace', () => {
 
   it("is not able to fetch other user's workspace", async () => {
     const workspace = await factory.create('workspace', { name: 'Other workspace ' });
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
+    const res = await query({
+      context: { user },
       query: WORKSPACE,
       variables: {
         input: {
@@ -129,7 +117,7 @@ describe('Fetching a workspace', () => {
 
 describe('Creating workspaces', () => {
   let user;
-  const query = `
+  const CREATE_WORKSPACE = `
     mutation($input: CreateWorkspaceInput!) {
       createWorkspace(input: $input) {
         id
@@ -146,11 +134,9 @@ describe('Creating workspaces', () => {
   });
 
   it('is able to create a workspace with valid fields', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: CREATE_WORKSPACE,
       variables: {
         input: {
           name: 'New workspace'
@@ -172,11 +158,9 @@ describe('Creating workspaces', () => {
   });
 
   it('is not able to create a workspace with invalid fields', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: CREATE_WORKSPACE,
       variables: {
         input: {
           name: ''
@@ -190,10 +174,8 @@ describe('Creating workspaces', () => {
   });
 
   it('is not able to create workspace without login', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      query,
+    const res = await query({
+      query: CREATE_WORKSPACE,
       variables: {
         input: {
           name: 'Workspace name'
@@ -235,10 +217,8 @@ describe('Updating and deleting workspaces', () => {
   });
 
   it('is able to update workspace with valid fields', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
+    const res = await query({
+      context: { user },
       query: UPDATE_WORKSPACE,
       variables: {
         input: {
@@ -255,10 +235,8 @@ describe('Updating and deleting workspaces', () => {
   });
 
   it('is not able to update workspace with invalid fields', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
+    const res = await query({
+      context: { user },
       query: UPDATE_WORKSPACE,
       variables: {
         input: {
@@ -274,9 +252,7 @@ describe('Updating and deleting workspaces', () => {
   });
 
   it('is not able to update workspace without login', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
+    const res = await query({
       query: UPDATE_WORKSPACE,
       variables: {
         input: {
@@ -293,10 +269,8 @@ describe('Updating and deleting workspaces', () => {
 
   it("is not able to update others' workspace", async () => {
     const other = await factory.create('workspace', { name: 'Other' });
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
+    const res = await query({
+      context: { user },
       query: UPDATE_WORKSPACE,
       variables: {
         input: {
@@ -317,10 +291,8 @@ describe('Updating and deleting workspaces', () => {
     let userWorkspaces = await user.$relatedQuery('workspaces');
     expect(userWorkspaces.map(({ id }) => id)).toContain(workspaceId);
 
-    await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
+    await query({
+      context: { user },
       query: DELETE_WORKSPACE,
       variables: {
         input: {
@@ -335,10 +307,8 @@ describe('Updating and deleting workspaces', () => {
 
   it("is not able to delete others' workspace", async () => {
     const other = await factory.create('workspace', { name: 'Other' });
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
+    const res = await query({
+      context: { user },
       query: DELETE_WORKSPACE,
       variables: {
         input: {

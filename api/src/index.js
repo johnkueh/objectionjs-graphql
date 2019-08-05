@@ -1,4 +1,4 @@
-import { ApolloServer } from 'apollo-server-micro';
+import { ApolloServer } from 'apollo-server-lambda';
 import Knex from 'knex';
 import { Model } from 'objection';
 import jsonwebtoken from 'jsonwebtoken';
@@ -22,7 +22,7 @@ const schema = applyMiddleware(
   permissions
 );
 
-const context = async ({ req }) => {
+const userContext = async ({ req }) => {
   let user = null;
 
   try {
@@ -41,15 +41,25 @@ const context = async ({ req }) => {
   };
 };
 
-const server = new ApolloServer({
-  introspection: true,
-  playground: true,
-  schema,
-  context
+export const makeServer = ({ context }) =>
+  new ApolloServer({
+    introspection: true,
+    playground: true,
+    schema,
+    context
+  });
+
+const server = makeServer({
+  context: userContext
 });
 
 export const JWTSECRET = 'JWTSECRET';
 export const path = '/api/graphql';
 export const jwtSign = ({ id, email }) => jsonwebtoken.sign({ id, email }, JWTSECRET);
 
-export default server.createHandler({ path });
+export const graphqlHandler = server.createHandler({
+  path: '/prod/graphql',
+  cors: {
+    origin: '*'
+  }
+});

@@ -2,12 +2,11 @@ import '../support/transactional-tests';
 import '../factories';
 import cloudinary from 'cloudinary';
 import factory from 'factory-girl';
-import request from '../support/request';
-import handler, { path } from '../../src/index';
+import { query } from '../support/apollo-test-helper';
 
 describe('Upserting images', () => {
   let user;
-  const query = `
+  const UPSERT_IMAGE = `
     mutation($input: UpsertImageInput!) {
       upsertImage(input: $input) {
         id
@@ -25,10 +24,8 @@ describe('Upserting images', () => {
   });
 
   it('is not able to upsert image without auth', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      query,
+    const res = await query({
+      query: UPSERT_IMAGE,
       variables: {
         input: {
           publicId: 'public-id',
@@ -43,11 +40,9 @@ describe('Upserting images', () => {
   });
 
   it('is not able to create an image with missing fields', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: UPSERT_IMAGE,
       variables: {
         input: {
           caption: 'A test caption'
@@ -63,11 +58,9 @@ describe('Upserting images', () => {
   });
 
   it('is not able to create an image with invalid fields', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: UPSERT_IMAGE,
       variables: {
         input: {
           publicId: 'xxx-id',
@@ -90,11 +83,9 @@ describe('Upserting images', () => {
       imageableId: user.id
     });
 
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: UPSERT_IMAGE,
       variables: {
         input: {
           publicId: 'existing-public-id',
@@ -116,11 +107,9 @@ describe('Upserting images', () => {
       imageableId: user.id
     });
 
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: UPSERT_IMAGE,
       variables: {
         input: {
           publicId: 'new-public-id',
@@ -142,11 +131,9 @@ describe('Upserting images', () => {
       imageableId: user.id
     });
 
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: UPSERT_IMAGE,
       variables: {
         input: {
           publicId: 'xxxpublicid',
@@ -164,11 +151,9 @@ describe('Upserting images', () => {
   });
 
   it('is able to create an image with valid fields', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: UPSERT_IMAGE,
       variables: {
         input: {
           publicId: 'xxxpublicid',
@@ -197,11 +182,9 @@ describe('Upserting images', () => {
       imageableId: user.id
     });
 
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: UPSERT_IMAGE,
       variables: {
         input: {
           id: image.id,
@@ -225,7 +208,7 @@ describe('Upserting images', () => {
 });
 
 describe('Deleting images', () => {
-  const query = `
+  const DELETE_IMAGE = `
     mutation($input: DeleteImageInput!) {
       deleteImage(input: $input) {
         count
@@ -241,10 +224,8 @@ describe('Deleting images', () => {
   });
 
   it('is not able to delete image without auth', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      query,
+    const res = await query({
+      query: DELETE_IMAGE,
       variables: {
         input: {
           id: 'xxx-image-id'

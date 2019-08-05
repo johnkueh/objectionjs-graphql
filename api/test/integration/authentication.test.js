@@ -1,12 +1,10 @@
+import factory from 'factory-girl';
 import '../support/transactional-tests';
 import '../factories';
-
-import factory from 'factory-girl';
-import request from '../support/request';
-import handler, { path } from '../../src/index';
+import { query } from '../support/apollo-test-helper';
 
 describe('Logging in', () => {
-  const query = `
+  const LOGIN = `
     mutation($input: LoginInput!) {
       login(input: $input) {
         jwt
@@ -26,10 +24,8 @@ describe('Logging in', () => {
   });
 
   it('is not able to login with wrong credentials', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      query,
+    const res = await query({
+      query: LOGIN,
       variables: {
         input: {
           email: 'john@doe.com',
@@ -44,10 +40,8 @@ describe('Logging in', () => {
   });
 
   it('is able to login with correct credentials', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      query,
+    const res = await query({
+      query: LOGIN,
       variables: {
         input: {
           email: 'john@doe.com',
@@ -68,7 +62,7 @@ describe('Logging in', () => {
 });
 
 describe('Signing up', () => {
-  const query = `
+  const SIGNUP = `
     mutation($input: SignupInput!) {
       signup(input: $input) {
         jwt
@@ -81,10 +75,8 @@ describe('Signing up', () => {
     }
   `;
   it('is able to signup successfully', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      query,
+    const res = await query({
+      query: SIGNUP,
       variables: {
         input: {
           name: 'John Doe',
@@ -105,10 +97,8 @@ describe('Signing up', () => {
   });
 
   it('is not able to signup with missing fields', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      query,
+    const res = await query({
+      query: SIGNUP,
       variables: {
         input: {
           name: '',
@@ -131,10 +121,8 @@ describe('Signing up', () => {
       password: 'password'
     });
 
-    const res = await request({
-      handler,
-      apiPath: path,
-      query,
+    const res = await query({
+      query: SIGNUP,
       variables: {
         input: {
           name: 'John Doe',

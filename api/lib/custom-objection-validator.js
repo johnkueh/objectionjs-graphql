@@ -1,6 +1,6 @@
 const v = require('voca');
 const { Validator } = require('objection');
-const { UserInputError } = require('apollo-server-micro');
+const { UserInputError } = require('apollo-server-lambda');
 
 class CustomObjectionValidator extends Validator {
   validate(args) {

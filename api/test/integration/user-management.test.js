@@ -2,13 +2,12 @@ import '../support/transactional-tests';
 import '../factories';
 import cloudinary from 'cloudinary';
 import factory from 'factory-girl';
-import request from '../support/request';
-import handler, { path } from '../../src/index';
+import { query } from '../support/apollo-test-helper';
 import User from '../../models/user';
 
 describe('Fetching user profile', () => {
   let user;
-  const query = `
+  const ME = `
     query {
       me {
         id
@@ -30,10 +29,8 @@ describe('Fetching user profile', () => {
   });
 
   it('is not able to fetch user profile without credentials', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      query
+    const res = await query({
+      query: ME
     });
 
     expect(res.errors[0].extensions.exception.errors).toEqual({
@@ -42,11 +39,8 @@ describe('Fetching user profile', () => {
   });
 
   it('is not able to fetch user profile with wrong credentials', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=wrongjwt`],
-      query
+    const res = await query({
+      query: ME
     });
 
     expect(res.errors[0].extensions.exception.errors).toEqual({
@@ -55,11 +49,9 @@ describe('Fetching user profile', () => {
   });
 
   it('is able to fetch user profile with credentials', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query
+    const res = await query({
+      context: { user },
+      query: ME
     });
 
     expect(res.data.me).toEqual({
@@ -77,11 +69,9 @@ describe('Fetching user profile', () => {
       imageableId: user.id
     });
 
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query
+    const res = await query({
+      context: { user },
+      query: ME
     });
 
     expect(res.data.me).toEqual({
@@ -98,7 +88,7 @@ describe('Fetching user profile', () => {
 
 describe('Updating user profile', () => {
   let user;
-  const query = `
+  const UPDATE_USER = `
     mutation($input: UpdateUserInput!) {
       updateUser(input: $input) {
         id
@@ -116,11 +106,9 @@ describe('Updating user profile', () => {
   });
 
   it('can update user profile with valid fields', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: UPDATE_USER,
       variables: {
         input: {
           email: 'darth@vader.com',
@@ -137,11 +125,9 @@ describe('Updating user profile', () => {
   });
 
   it('can update user password', async () => {
-    await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    await query({
+      context: { user },
+      query: UPDATE_USER,
       variables: {
         input: {
           password: 'newpassword'
@@ -154,11 +140,9 @@ describe('Updating user profile', () => {
   });
 
   it('fails to update with invalid fields', async () => {
-    const res = await request({
-      handler,
-      apiPath: path,
-      cookies: [`jwt=${user.jwt}`],
-      query,
+    const res = await query({
+      context: { user },
+      query: UPDATE_USER,
       variables: {
         input: {
           name: '',
@@ -176,7 +160,7 @@ describe('Updating user profile', () => {
   });
 
   describe('Managing user logo', () => {
-    const deleteImageMutation = `
+    const DELETE_IMAGE = `
       mutation($input: DeleteImageInput!) {
         deleteImage(input: $input) {
           count
@@ -190,11 +174,9 @@ describe('Updating user profile', () => {
         imageableId: 'other-user-id'
       });
 
-      const res = await request({
-        handler,
-        apiPath: path,
-        cookies: [`jwt=${user.jwt}`],
-        query: deleteImageMutation,
+      const res = await query({
+        context: { user },
+        query: DELETE_IMAGE,
         variables: {
           input: {
             id: image.id
@@ -216,11 +198,9 @@ describe('Updating user profile', () => {
         imageableId: user.id
       });
 
-      const res = await request({
-        handler,
-        apiPath: path,
-        cookies: [`jwt=${user.jwt}`],
-        query: deleteImageMutation,
+      const res = await query({
+        context: { user },
+        query: DELETE_IMAGE,
         variables: {
           input: {
             id: image.id
